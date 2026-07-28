@@ -8,5 +8,6 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ### Added
 
-- Project bootstrap: Nuxt 4, Tailwind, Drizzle/SQLite plumbing, AIDF 5.0.0, health endpoint.
-- Draft Feature 1 spec: create and list notes (`docs/specs/001-create-and-list-notes.md`).
+- Create and list notes: SQLite `notes` table, `GET/POST /api/notes`, home UI with empty/loading/error/validation states.
+- Feature 1 AIDF artifacts: approved spec, design, UI foundation, mockup, plan, data model, API contract, migration.
+- Project bootstrap: Nuxt 4, Tailwind v4, Drizzle/SQLite plumbing, AIDF 5.0.0, health endpoint.

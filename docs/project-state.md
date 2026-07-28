@@ -16,14 +16,12 @@ Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifec
 
 ## Now
 
-- Bootstrap Nuxt + SQLite + AIDF scaffolding
-- Draft Feature 1 spec for human approval
+- Open PR for Feature 1 and run AI review
 
 ## Recently completed
 
-- Cloned empty repo `prishanf/aidf-quick-notes`
-- Installed AIDF 5.0.0 into `.aidf/`
-- Scaffolded Nuxt 4, Tailwind, Drizzle, Vitest, health endpoint
+- Implemented create and list notes on `feat/001-create-and-list-notes`
+- Plan, design, and spec approved
 
 ## Next
 

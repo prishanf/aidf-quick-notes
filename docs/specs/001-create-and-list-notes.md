@@ -2,7 +2,7 @@
 type: feature-spec
 track: C
 required_when: "every Track B and Track C change"
-status: draft
+status: approved
 owner: prishanf
 created: 2026-07-28
 updated: 2026-07-28
@@ -76,10 +76,10 @@ Track C because the change introduces a database schema (`database` tag). Tags `
 
 ## Approval
 
-- Decision: `pending`
+- Decision: `approved`
 - Approver: prishanf
-- Date:
-- Notes: After approval, next step is the `design` gate (UI foundation + clickable mockup), not planning or build.
+- Date: 2026-07-28
+- Notes: Design gate next (UI foundation + clickable mockup), then plan, then build.
 
 ## Agent instruction
 
