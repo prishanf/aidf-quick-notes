@@ -1,22 +1,27 @@
-# AIDF self-consistency check — run this on the framework repository itself,
-# and on any project that vendors the framework documents.
+# AIDF project self-check — for repositories that *install* AIDF via
+# aidf-install.sh (framework lives under .aidf/).
 #
-# It catches the class of defect that killed AIDF v1: documents that quietly
-# disagree with each other. Agents read these files literally, so a
-# contradiction is not a style problem — it is a correctness problem.
+# This is NOT the framework-repo consistency suite. That suite needs
+# diagrams/, examples/, and the full AIDF source tree, which are deliberately
+# not vendored into projects. Running check-consistency.sh here fails looking
+# for files that were never installed.
+#
+# Framework maintainers: use the workflow in the AIDF repository root
+# (.github/workflows/aidf-selfcheck.yml), which still runs check-consistency.sh,
+# self-test.sh, and Mermaid parsing against the full source tree.
 
-name: AIDF self-check
+name: AIDF project self-check
 
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
 
 permissions:
   contents: read
 
 jobs:
-  consistency:
+  project-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,29 +29,5 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Framework consistency
-        run: sh reference/scripts/check-consistency.sh
-
-      - name: Manifest validity (pass and fail paths)
-        run: sh reference/scripts/self-test.sh
-
-      - name: Mermaid diagrams parse
-        run: |
-          npm install --no-save @mermaid-js/mermaid-cli >/dev/null 2>&1
-          python3 - <<'PY'
-          import pathlib, re, subprocess, sys, tempfile
-          failed = []
-          for path in pathlib.Path('.').rglob('*.md'):
-              if 'node_modules' in path.parts:
-                  continue
-              for i, block in enumerate(re.findall(r'```mermaid\n(.*?)```', path.read_text(), re.S)):
-                  with tempfile.NamedTemporaryFile('w', suffix='.mmd', delete=False) as fh:
-                      fh.write(block)
-                  rc = subprocess.call(['npx','-y','mmdc','-i',fh.name,'-o',fh.name+'.svg'],
-                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                  if rc != 0:
-                      failed.append('%s block %d' % (path, i + 1))
-          if failed:
-              print('Diagrams failed to parse:'); [print(' -', f) for f in failed]; sys.exit(1)
-          print('All mermaid diagrams parse.')
-          PY
+      - name: Validate project manifest
+        run: sh reference/scripts/validate-manifest.sh project.yaml

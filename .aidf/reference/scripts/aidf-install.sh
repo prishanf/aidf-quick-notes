@@ -230,6 +230,9 @@ is optional. See `%s/standards/quality-gates.md`.
 """ % root)
 
     # CI and repository controls belong at the project root, not in .aidf.
+    # aidf-selfcheck.yml here is the *project* variant (manifest validation).
+    # The framework repository keeps its own fuller self-check under
+    # .github/workflows/ — do not confuse the two.
     for rel, dest in [
         ("reference/github/workflows/aidf-gates.yml", ".github/workflows/aidf-gates.yml"),
         ("reference/github/workflows/aidf-selfcheck.yml", ".github/workflows/aidf-selfcheck.yml"),
