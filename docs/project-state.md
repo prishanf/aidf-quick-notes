@@ -16,12 +16,13 @@ Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifec
 
 ## Now
 
-- Human review of PR #1 (AI review complete)
+- Human UI QA Preview for PR #1 (`docs/qa/001-create-and-list-notes-ui-signoff.md`)
+- Human PR review / merge after UI QA sign-off
 
 ## Recently completed
 
-- Feature 1 implemented and remediated (no app auto-migrate; 201 assert)
-- AI review posted; ready for human
+- Local Preview prepared at http://127.0.0.1:3000/ on revision `55e843d`
+- Feature 1 CI gates green; AI review ready-for-human
 
 ## Next
 
