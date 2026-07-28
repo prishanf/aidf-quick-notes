@@ -12,34 +12,35 @@ manifest: project.yaml
 
 ## Current milestone
 
-Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifecycle.
+Feature 2 (delete a note) — AI review complete; awaiting human PR review.
 
 ## Now
 
-- Merge PR #1 to `develop` (QA sign-off approved; PR still open on GitHub as of last check)
-- Then start Feature 2 (delete a note) via AIDF `spec`
+- Human review / merge of PR #2: https://github.com/prishanf/aidf-quick-notes/pull/2
+- After merge: Feature 3 (edit) via AIDF `spec` when ready
 
 ## Recently completed
 
-- UI QA sign-off approved by Prishan Fernando (`docs/qa/001-create-and-list-notes-ui-signoff.md`)
-- Feature 1 implemented, AI-reviewed, CI green on the feature branch
+- Feature 2 build on `feat/002-delete-note`: confirm delete UI, `DELETE /api/notes/:id`, tests, AIDF docs
+- AI review posted; ready-for-human on PR #2
+- Feature 1 merged to `develop` (PR #1)
 
 ## Next
 
-- Human approval of Feature 1 spec
-- Design + mockup (ui tag)
-- Implementation plan approval
-- Build Feature 1 on `feat/...` off `develop`
+- Human PR approval on #2 (AI review is not sufficient)
+- Preview UI QA if required by `ui` tag gates on the host
+- Then merge to `develop`
 
 ## Risks and blockers
 
 | Item | Impact | Owner | Next action |
 |---|---|---|---|
-| GitHub `gh` auth token invalid locally | Cannot open PRs via `gh` until re-auth | prishanf | `gh auth login` |
 | Branch protection not yet configured | Gates remain advisory | prishanf | Protect `main`/`develop`, require CODEOWNERS |
+| Hard delete irreversible | Expected for Feature 2 | — | Documented in spec/API contract |
 
 ## Decisions and links
 
 - Product: Quick Notes — create/list, delete, edit
 - Repo: https://github.com/prishanf/aidf-quick-notes
-- Spec: pending `docs/specs/`
+- Spec: `docs/specs/002-delete-note.md`
+- PR: https://github.com/prishanf/aidf-quick-notes/pull/2
