@@ -14,6 +14,17 @@ set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 command -v python3 >/dev/null 2>&1 || { echo "aidf: python3 is required" >&2; exit 2; }
 
+# This script validates the AIDF *framework* repository. Installed projects
+# vendor only a subset under .aidf/ (no diagrams/, examples/, …). Detect that
+# layout early so CI/humans get a clear message instead of FileNotFoundError.
+if [ ! -d "$ROOT/diagrams" ] || [ ! -f "$ROOT/guide/03-workflow.md" ]; then
+  echo "aidf: check-consistency.sh is for the AIDF framework repository, not an installed project." >&2
+  echo "aidf: diagrams/ and the full source tree are not vendored into .aidf/." >&2
+  echo "aidf: In a project, run: sh .aidf/reference/scripts/validate-manifest.sh project.yaml" >&2
+  echo "aidf: Framework maintainers run this from a clone of the AIDF repository." >&2
+  exit 2
+fi
+
 ROOT="$ROOT" python3 - <<'PY'
 import os, re, sys
 

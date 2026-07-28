@@ -16,14 +16,13 @@ Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifec
 
 ## Now
 
-- Bootstrap Nuxt + SQLite + AIDF scaffolding
-- Draft Feature 1 spec for human approval
+- Merge PR #1 to `develop` (QA sign-off approved; PR still open on GitHub as of last check)
+- Then start Feature 2 (delete a note) via AIDF `spec`
 
 ## Recently completed
 
-- Cloned empty repo `prishanf/aidf-quick-notes`
-- Installed AIDF 5.0.0 into `.aidf/`
-- Scaffolded Nuxt 4, Tailwind, Drizzle, Vitest, health endpoint
+- UI QA sign-off approved by Prishan Fernando (`docs/qa/001-create-and-list-notes-ui-signoff.md`)
+- Feature 1 implemented, AI-reviewed, CI green on the feature branch
 
 ## Next
 

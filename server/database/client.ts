@@ -13,7 +13,7 @@ export function useDb() {
   }
 
   const config = useRuntimeConfig()
-  const path = config.sqlitePath as string
+  const path = (config.sqlitePath as string) || process.env.SQLITE_PATH || './data/notes.sqlite'
   mkdirSync(dirname(path), { recursive: true })
 
   sqlite = new Database(path)
