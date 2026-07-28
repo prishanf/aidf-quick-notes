@@ -22,7 +22,7 @@ updated: 2026-07-28
 | To add a... | Copy the shape of | Notes |
 |---|---|---|
 | API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` | Validate in route or `server/utils/notes.ts` |
-| Database query / repository | `server/database/client.ts` + `schema.ts` | Use `useDb()`; migrations auto-apply on connect |
+| Database query / repository | `server/database/client.ts` + `schema.ts` | Use `useDb()`; run `npm run db:migrate` before the app (app does not auto-migrate) |
 | UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error |
 | Test | `tests/notes.test.ts` | Hit real HTTP routes via `$fetch` |
 

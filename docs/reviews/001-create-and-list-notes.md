@@ -1,7 +1,7 @@
 ---
 type: code-review
 track: C
-status: request-changes
+status: ready-for-human
 owner: ai-review
 created: 2026-07-28
 updated: 2026-07-28
@@ -14,7 +14,7 @@ plan: docs/plans/001-create-and-list-notes.md
 
 ## Scope checked
 
-- Diff `develop...feat/001-create-and-list-notes`
+- Diff `develop...feat/001-create-and-list-notes` (including remediation commits)
 - Spec acceptance criteria, plan sequence, data model vs schema
 - API contract vs routes/tests
 - Evidence artifact corroboration status
@@ -22,42 +22,35 @@ plan: docs/plans/001-create-and-list-notes.md
 
 ## Findings
 
-### P1 — Application role runs migrations
+### P1 — Application role runs migrations — **fixed**
 
-- **Where:** `server/database/client.ts` (`migrate(...)` inside `useDb()`)
-- **Why:** `project.yaml` sets `database.application_role_may_migrate: false`. Auto-migrate on connect makes the app the migrator and hides missing `npm run db:migrate` from operators.
-- **Fix:** Remove runtime migrate from `useDb`. Apply migrations in tests explicitly (and via `npm run db:migrate` for local/dev). Update conventions accordingly.
+- Was: `migrate()` inside `useDb()`
+- Fix: removed runtime migrate; tests bootstrap schema explicitly; README/conventions require `npm run db:migrate`
 
-### P2 — Evidence not CI-corroborated
+### P2 — Evidence not CI-corroborated — **accepted follow-up**
 
-- **Where:** `docs/evidence/001-create-and-list-notes-agent.md` (`runner: agent`)
-- **Why:** Agent-claimed results cannot satisfy gates; expected until Actions run on the PR.
-- **Fix:** Let CI corroborate; do not treat agent evidence as green.
+- Agent evidence remains claimed until GitHub Actions corroborates on the PR.
 
-### P2 — POST 201 not asserted in HTTP test
+### P2 — POST 201 not asserted — **fixed**
 
-- **Where:** `tests/notes.test.ts` create case
-- **Why:** Body shape is checked; status code 201 is not. Low risk with `setResponseStatus`, but contract says 201.
-- **Fix:** Assert response status via `$fetch.raw` or equivalent.
+- Create test now uses `fetch` and expects status `201`.
 
-### P3 — Validation constants duplicated in UI
+### P3 — Validation constants duplicated in UI — **accepted follow-up**
 
-- **Where:** `app/pages/index.vue` hardcodes 120 / 5000
-- **Why:** Drift risk vs `server/utils/notes.ts`
-- **Fix:** Optional shared constants module or document duplication as acceptable for client/server split.
+- Acceptable for client/server split in this example.
 
 ## What looks solid
 
-- Schema matches data model columns; migration SQL matches schema
-- HTTP tests cover GET empty, POST create + ordering, POST 400 empty title
-- UI implements empty / loading / success / validation / server-error; no mockup markup copied
-- Token layer precedes components; utilities use semantic colors
-- API coverage script: 3/3 covered
+- Schema matches data model; migration SQL matches schema
+- HTTP tests cover GET empty, POST create + ordering + 201, POST 400 empty title
+- UI implements empty / loading / success / validation / server-error
+- Token layer precedes components
+- API coverage script: 3/3 covered (agent-run)
 
 ## Decision
 
-`request-changes` — remediate P1 (and preferably P2 status assert) before ready-for-human.
+`ready-for-human` — no open P0/P1. AI review does **not** satisfy human PR approval.
 
 ## Next action
 
-`build` remediation on P1 (+ optional P2 test assert).
+Human review may begin on https://github.com/prishanf/aidf-quick-notes/pull/1

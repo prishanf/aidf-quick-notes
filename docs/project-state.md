@@ -16,12 +16,12 @@ Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifec
 
 ## Now
 
-- Open PR for Feature 1 and run AI review
+- Human review of PR #1 (AI review complete)
 
 ## Recently completed
 
-- Implemented create and list notes on `feat/001-create-and-list-notes`
-- Plan, design, and spec approved
+- Feature 1 implemented and remediated (no app auto-migrate; 201 assert)
+- AI review posted; ready for human
 
 ## Next
 

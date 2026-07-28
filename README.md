@@ -20,6 +20,7 @@ Minimal Nuxt + SQLite example used to exercise the [AI Development Framework](ht
 ```bash
 cp .env.example .env
 npm ci
+npm run db:migrate
 npm run dev
 ```
 

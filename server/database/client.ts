@@ -1,8 +1,7 @@
 import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { mkdirSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
 import * as schema from './schema'
 
 let sqlite: Database.Database | undefined
@@ -20,9 +19,6 @@ export function useDb() {
   sqlite = new Database(path)
   sqlite.pragma('journal_mode = WAL')
   db = drizzle(sqlite, { schema })
-  migrate(db, {
-    migrationsFolder: join(process.cwd(), 'server/database/migrations'),
-  })
   return db
 }
 
