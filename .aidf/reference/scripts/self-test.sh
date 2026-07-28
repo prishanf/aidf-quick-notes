@@ -57,8 +57,21 @@ expect_fail "agent-authored evidence CANNOT satisfy a gate" \
   sh "$ROOT/reference/scripts/validate-evidence.sh" "$TMP/agent.json" "$ROOT/project.yaml"
 
 sed 's/"status": "pass"/"status": "not_run"/' "$TMP/ci.json" > "$TMP/notrun.json"
-expect_fail "not_run does not count as pass (fail closed)" \
+expect_fail "not_run on a CI gate does not count as pass (fail closed)" \
   sh "$ROOT/reference/scripts/validate-evidence.sh" "$TMP/notrun.json" "$ROOT/project.yaml"
+
+cat > "$TMP/human-pending.json" <<'JSON'
+{ "schema_version": "1", "commit": "abc1234", "runner": "ci",
+  "generated_at": "2026-07-26T00:00:00Z",
+  "classification": { "track": "B", "risk": "standard", "tags": [] },
+  "checks": [ { "name": "test", "command": "true", "exit_code": 0 } ],
+  "gates": [
+    { "name": "test", "status": "pass", "source": "ci" },
+    { "name": "pr-approval", "status": "not_run", "source": "human" }
+  ] }
+JSON
+expect_pass "human not_run gates are pending, not a CI rejection" \
+  sh "$ROOT/reference/scripts/validate-evidence.sh" "$TMP/human-pending.json" "$ROOT/project.yaml"
 
 cat > "$TMP/expired.json" <<'JSON'
 { "schema_version": "1", "commit": "abc1234", "runner": "ci",

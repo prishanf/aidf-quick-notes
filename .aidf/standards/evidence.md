@@ -60,7 +60,7 @@ A reviewer reading a PR should never have to trust the author's summary of wheth
 
 A check result is an integer. `0` is pass; anything else is fail. Not "mostly passing", not "passing except a known flake", not "passing locally". A flaky test is a defect to record, not a status to negotiate.
 
-If a check cannot be run, its status is `not_run` with a reason. `not_run` never counts as `pass` — see the fail-closed rule in [quality-gates.md](quality-gates.md).
+If a check cannot be run, its status is `not_run` with a reason. For **automated** gates (`source: ci`), `not_run` never counts as `pass` — see the fail-closed rule in [quality-gates.md](quality-gates.md). For **human** gates (`source: human`) such as `pr-approval`, CI records `not_run` on purpose because automation cannot approve a PR; those stay pending and are enforced by branch protection / CODEOWNERS, not by rejecting the CI evidence artifact.
 
 ## Waivers
 

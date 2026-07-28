@@ -67,12 +67,22 @@ for check in evidence.get("checks", []):
         problems.append("check '%s' failed (exit %s)" % (check.get("name"), check.get("exit_code")))
 
 today = datetime.date.today().isoformat()
+pending_human = []
 for gate in evidence.get("gates", []):
-    name, status = gate.get("name"), gate.get("status")
+    name, status, source = gate.get("name"), gate.get("status"), gate.get("source")
     if status == "fail":
         problems.append("gate '%s' failed" % name)
     elif status == "not_run":
-        problems.append("gate '%s' did not run. Gates fail closed: a missing result is not a pass." % name)
+        # Human gates are recorded as not_run by run-gates.sh because CI cannot
+        # satisfy them (PR approval, specialist review, UI QA, preview sign-off).
+        # That is intentional transparency — not a CI failure. Branch protection
+        # and CODEOWNERS enforce those gates. Automated gates that never ran
+        # still fail closed.
+        if source == "human":
+            pending_human.append(name)
+        else:
+            problems.append(
+                "gate '%s' did not run. Gates fail closed: a missing result is not a pass." % name)
     elif status == "waived":
         waiver = gate.get("waiver") or {}
         expires = waiver.get("expires", "")
@@ -90,4 +100,7 @@ if problems:
 print("aidf: evidence accepted -- %d check(s), %d gate(s), runner=%s, commit=%s"
       % (len(evidence.get("checks", [])), len(evidence.get("gates", [])),
          runner, evidence.get("commit", "?")[:8]))
+if pending_human:
+    print("aidf: human gates still pending (enforced outside this artifact): %s"
+          % ", ".join(pending_human))
 PY
