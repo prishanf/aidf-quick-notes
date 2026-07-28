@@ -82,4 +82,32 @@ describe('notes API', async () => {
       statusCode: 400,
     })
   })
+
+  it('DELETE /api/notes/:id removes a note and returns 204', async () => {
+    const created = await $fetch<{ id: string; title: string }>('/api/notes', {
+      method: 'POST',
+      body: { title: 'Delete me', body: 'gone soon' },
+    })
+
+    const response = await fetch(`/api/notes/${created.id}`, { method: 'DELETE' })
+    expect(response.status).toBe(204)
+
+    const listed = await $fetch<{ notes: Array<{ id: string }> }>('/api/notes')
+    expect(listed.notes.some(n => n.id === created.id)).toBe(false)
+  })
+
+  it('DELETE /api/notes/:id returns 404 for an unknown id', async () => {
+    await expect(
+      $fetch('/api/notes/00000000-0000-4000-8000-000000000000', {
+        method: 'DELETE',
+      }),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+    })
+  })
+
+  it('DELETE /api/notes/:id rejects a blank id with 400', async () => {
+    const response = await fetch('/api/notes/%20', { method: 'DELETE' })
+    expect(response.status).toBe(400)
+  })
 })

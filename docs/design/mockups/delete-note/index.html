@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design mockup — Delete a note</title>
+    <script src="./js/tailwind-boot.js?v=f2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="./css/mockup.css?v=f2" />
+  </head>
+
+  <body>
+    <div id="shell"></div>
+
+    <main id="content" class="mx-auto max-w-3xl px-4 py-8">
+      <h1 class="text-2xl font-semibold">Delete a note — design mockup</h1>
+      <p class="mt-2 max-w-2xl text-sm text-text-muted">
+        Throwaway prototype for the Feature 2 design gate. Fabricated data, no backend.
+        <strong class="font-medium text-text">Markup will not be reused</strong>
+        — only the shared token layer crosses into the real app.
+      </p>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">Screens</h2>
+        <ul class="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface">
+          <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3">
+            <a href="./notes.html" class="font-medium text-primary hover:underline">Notes</a>
+            <span class="text-sm text-text-muted">Create form + list + per-row delete with confirm</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">States</h2>
+        <p class="mt-1 text-sm text-text-muted">
+          Every state named in the design doc is reachable by a click.
+        </p>
+        <div class="mt-3 overflow-x-auto rounded-lg border border-border bg-surface">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-left text-xs tracking-wide text-text-muted uppercase">
+                <th scope="col" class="px-4 py-2.5 font-medium">State</th>
+                <th scope="col" class="px-4 py-2.5 font-medium">Open</th>
+              </tr>
+            </thead>
+            <tbody class="[&_a]:text-primary [&_a:hover]:underline">
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Success (32 notes + Delete)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Confirm dialog</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">open, then Delete on a row</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete in progress</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">confirm Delete — watch “Deleting…”</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete server error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=delete-error">open, then confirm Delete</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete not found (404)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=delete-missing">open, then confirm Delete</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Empty (incl. after last delete)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=empty">open</a> or delete until empty</td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Loading</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=loading">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Server error (load)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=error">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Permission error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=forbidden">open</a></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2.5">Validation error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">submit with an empty title</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">What to exercise</h2>
+        <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm">
+          <li>Is Delete visible on each row without crowding title/body/timestamp?</li>
+          <li>Does the confirm dialog name the note and make Cancel vs Delete obvious?</li>
+          <li>After confirm, does the note leave the list? After the last note, empty state?</li>
+          <li>delete-error / delete-missing: is the alert clear and are other notes untouched?</li>
+          <li>Narrow below 40rem: dialog and list still usable?</li>
+          <li>Keyboard: tab to Delete, confirm Cancel/Delete, visible focus?</li>
+          <li>Reset fixtures after deletes — does the list restore?</li>
+        </ul>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountShell } from "./js/shell.js?v=f2";
+      mountShell({ screen: "index" });
+    </script>
+  </body>
+</html>

@@ -23,4 +23,7 @@ logs
 *.sqlite
 *.sqlite-journal
 data/
+# Keep design-mockup fixtures (AIDF mockups load data/*.json over HTTP)
+!docs/design/mockups/**/data/
+!docs/design/mockups/**/data/**
 .DS_Store

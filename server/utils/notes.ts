@@ -28,6 +28,16 @@ export function toNoteDto(row: NoteRow): NoteDto {
   }
 }
 
+export function validateNoteId(id: unknown): string {
+  if (typeof id !== 'string' || !id.trim()) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Note id is required.',
+    })
+  }
+  return id.trim()
+}
+
 export function validateCreateNote(input: unknown): { title: string; body: string } {
   if (!input || typeof input !== 'object') {
     throw createError({

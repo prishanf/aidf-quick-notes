@@ -21,9 +21,9 @@ updated: 2026-07-28
 
 | To add a... | Copy the shape of | Notes |
 |---|---|---|
-| API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` | Validate in route or `server/utils/notes.ts` |
+| API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` / `[id].delete.ts` | Validate in route or `server/utils/notes.ts` |
 | Database query / repository | `server/database/client.ts` + `schema.ts` | Use `useDb()`; run `npm run db:migrate` before the app (app does not auto-migrate) |
-| UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error |
+| UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error/confirm-delete |
 | Test | `tests/notes.test.ts` | Hit real HTTP routes via `$fetch` |
 
 ## Established patterns

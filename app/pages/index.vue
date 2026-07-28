@@ -18,6 +18,16 @@ const titleError = ref('')
 const formStatus = ref('')
 const saving = ref(false)
 
+const pendingDeleteId = ref<string | null>(null)
+const deleting = ref(false)
+const deleteError = ref('')
+
+const pendingNote = computed(() =>
+  pendingDeleteId.value
+    ? notes.value.find(n => n.id === pendingDeleteId.value) ?? null
+    : null,
+)
+
 function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString('en-US', {
     day: 'numeric',
@@ -78,8 +88,71 @@ async function onSubmit() {
   }
 }
 
+function openDeleteConfirm(id: string) {
+  deleteError.value = ''
+  pendingDeleteId.value = id
+  deleting.value = false
+}
+
+function cancelDelete() {
+  if (deleting.value) return
+  pendingDeleteId.value = null
+}
+
+function onConfirmBackdrop(event: MouseEvent) {
+  if (event.target === event.currentTarget) cancelDelete()
+}
+
+async function confirmDelete() {
+  const id = pendingDeleteId.value
+  if (!id || deleting.value) return
+
+  deleting.value = true
+  try {
+    await $fetch(`/api/notes/${id}`, { method: 'DELETE' })
+    notes.value = notes.value.filter(n => n.id !== id)
+    pendingDeleteId.value = null
+    deleteError.value = ''
+    formStatus.value = 'Note deleted.'
+  }
+  catch (error: unknown) {
+    const err = error as {
+      statusCode?: number
+      data?: { statusMessage?: string; statusCode?: number }
+      statusMessage?: string
+    }
+    const status = err?.data?.statusCode ?? err?.statusCode
+    deleteError.value = err?.data?.statusMessage
+      || err?.statusMessage
+      || (status === 404
+        ? 'That note was not found. It may already have been deleted.'
+        : 'Could not delete the note. Nothing was removed. Try again.')
+    pendingDeleteId.value = null
+  }
+  finally {
+    deleting.value = false
+  }
+}
+
 onMounted(() => {
   loadNotes()
+})
+
+watch(pendingNote, (note) => {
+  if (!note) return
+  nextTick(() => {
+    document.getElementById('confirm-cancel')?.focus()
+  })
+})
+
+function onDocumentKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') cancelDelete()
+}
+
+watch(pendingDeleteId, (id, _, onCleanup) => {
+  if (!id) return
+  document.addEventListener('keydown', onDocumentKeydown)
+  onCleanup(() => document.removeEventListener('keydown', onDocumentKeydown))
 })
 </script>
 
@@ -94,7 +167,7 @@ onMounted(() => {
           Your notes
         </h1>
         <p class="mt-2 text-sm text-text-muted">
-          Add a short note, then find it in the list newest first.
+          Add a short note, then find it in the list newest first. Delete removes it for good.
         </p>
       </header>
 
@@ -201,6 +274,26 @@ onMounted(() => {
         </div>
 
         <div
+          v-if="deleteError"
+          class="mt-3 rounded-lg border border-border bg-surface p-4"
+          role="alert"
+        >
+          <p class="font-semibold text-text">
+            Could not delete
+          </p>
+          <p class="mt-1 text-sm text-text-muted">
+            {{ deleteError }}
+          </p>
+          <button
+            type="button"
+            class="mt-3 rounded-md border border-border-strong px-3 py-1.5 text-sm hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            @click="deleteError = ''"
+          >
+            Dismiss
+          </button>
+        </div>
+
+        <div
           v-if="loadState === 'loading'"
           class="mt-3 space-y-2"
           aria-busy="true"
@@ -255,23 +348,76 @@ onMounted(() => {
             :key="note.id"
             class="px-4 py-3"
           >
-            <article>
-              <h3 class="font-semibold text-text">
-                {{ note.title }}
-              </h3>
-              <p class="mt-1 whitespace-pre-wrap text-sm text-text-muted">
-                <template v-if="note.body">
-                  {{ note.body }}
-                </template>
-                <span v-else>—</span>
-              </p>
-              <p class="mt-2 text-xs text-text-muted">
-                <time :datetime="note.createdAt">{{ formatDateTime(note.createdAt) }}</time>
-              </p>
+            <article class="flex items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-text">
+                  {{ note.title }}
+                </h3>
+                <p class="mt-1 whitespace-pre-wrap text-sm text-text-muted">
+                  <template v-if="note.body">
+                    {{ note.body }}
+                  </template>
+                  <span v-else>—</span>
+                </p>
+                <p class="mt-2 text-xs text-text-muted">
+                  <time :datetime="note.createdAt">{{ formatDateTime(note.createdAt) }}</time>
+                </p>
+              </div>
+              <button
+                type="button"
+                class="shrink-0 rounded-md border border-border px-2.5 py-1.5 text-sm text-danger hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                :aria-label="`Delete note ${note.title}`"
+                @click="openDeleteConfirm(note.id)"
+              >
+                Delete
+              </button>
             </article>
           </li>
         </ul>
       </section>
     </main>
+
+    <div
+      v-if="pendingNote"
+      class="fixed inset-0 z-40 flex items-end justify-center bg-text/40 p-4 sm:items-center"
+      role="presentation"
+      @click="onConfirmBackdrop"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        class="w-full max-w-md rounded-lg border border-border bg-surface-raised p-5 shadow-lg"
+      >
+        <h2
+          id="confirm-title"
+          class="text-lg font-semibold text-text"
+        >
+          Delete this note?
+        </h2>
+        <p class="mt-2 text-sm text-text-muted">
+          “{{ pendingNote.title }}” will be removed permanently. This cannot be undone.
+        </p>
+        <div class="mt-5 flex flex-wrap justify-end gap-2">
+          <button
+            id="confirm-cancel"
+            type="button"
+            class="rounded-md border border-border-strong px-3.5 py-2 text-sm hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60"
+            :disabled="deleting"
+            @click="cancelDelete"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="rounded-md bg-danger px-3.5 py-2 text-sm font-medium text-danger-fg hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60"
+            :disabled="deleting"
+            @click="confirmDelete"
+          >
+            {{ deleting ? 'Deleting…' : 'Delete note' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

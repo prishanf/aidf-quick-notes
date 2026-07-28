@@ -5,14 +5,14 @@ required_when: "the first `ui`-tagged change in a project; updated by later chan
 status: approved
 owner: prishanf
 updated: 2026-07-28
-spec: docs/specs/001-create-and-list-notes.md
+spec: docs/specs/002-delete-note.md
 tokens_source: app/assets/css/tokens.css
 tailwind_config: ""
 ---
 
 # UI foundation: AIDF Quick Notes
 
-**This is a proposal.** The project had no existing brand. Accept or replace these values before planning Feature 1.
+Approved with Feature 1. Feature 2 extends the component inventory only (confirm dialog + danger button); no new colour or type tokens.
 
 ## Brand basics
 
@@ -132,13 +132,17 @@ tailwind_config: ""
 
 | Component | Purpose | States | Implementation | Status |
 |---|---|---|---|---|
-| Button (primary) | Save note | default, hover, focus-visible, disabled, loading | Feature 1 page | planned |
-| Input / textarea | Title and body | default, focus, invalid + message | Feature 1 page | planned |
-| Form row / label | Label, hint, error | — | Feature 1 page | planned |
-| Note list | Vertical list of notes | empty, loading, success | Feature 1 page | planned |
-| Empty state | First-run zero notes | — | Feature 1 page | planned |
-| Loading / skeleton | Initial fetch | — | Feature 1 page | planned |
-| Inline alert | Server / permission error | error | Feature 1 page | planned |
+| Button (primary) | Save note | default, hover, focus-visible, disabled, loading | Feature 1 page | shipped |
+| Button (danger) | Confirm destructive delete | default, hover, focus-visible, disabled, loading | Feature 2 | planned |
+| Button (secondary / border) | Cancel in dialog; dismiss alert | default, hover, focus-visible, disabled | Feature 1 + 2 | shipped / planned |
+| Input / textarea | Title and body | default, focus, invalid + message | Feature 1 page | shipped |
+| Form row / label | Label, hint, error | — | Feature 1 page | shipped |
+| Note list | Vertical list of notes | empty, loading, success | Feature 1 page | shipped |
+| Delete row control | Per-note delete affordance | default, focus-visible | Feature 2 | planned |
+| Confirm dialog | Hard-delete confirmation | open, deleting | Feature 2 | planned |
+| Empty state | First-run zero notes | — | Feature 1 page | shipped |
+| Loading / skeleton | Initial fetch | — | Feature 1 page | shipped |
+| Inline alert | Server / permission / delete error | error | Feature 1 + 2 | shipped / planned |
 | Toast | Deferred — form status line for Feature 1 | — | — | deferred |
 
 ## Accessibility baseline
@@ -161,7 +165,7 @@ tailwind_config: ""
 | Empty value | Em dash | — |
 | Sentence case vs title case | Sentence case for headings and buttons | `Save note` |
 | Error message voice | What went wrong + what to do | `Enter a title between 1 and 120 characters.` |
-| Destructive confirmation | N/A for Feature 1 (no delete) | — |
+| Destructive confirmation | Modal: name the object; Cancel (safe) left/secondary; danger action right; no undo copy | `Delete this note?` / `Delete note` |
 
 ## Do not
 
