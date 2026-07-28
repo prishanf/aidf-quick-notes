@@ -15,7 +15,7 @@ pull-request: https://github.com/prishanf/aidf-quick-notes/pull/1
 ## Review target
 
 - Preview URL: http://127.0.0.1:3000/ (local isolated Preview — not a public URL)
-- Source revision: `55e843d41bc4307a94d7eaf06bcc8548f2f78a76` (`feat/001-create-and-list-notes`)
+- Source revision: `e6e06fb` (`feat/001-create-and-list-notes`; Preview app code from `55e843d` + this sign-off doc)
 - Data/fixture profile: `preview-notes-v1` — synthetic local SQLite at `./data/preview-notes.sqlite` (no production data; no production credentials)
 - Approved design: [docs/design/001-create-and-list-notes.md](../design/001-create-and-list-notes.md) · mockup reference: `docs/design/mockups/create-and-list-notes/` (`npm run mockup:serve`)
 
