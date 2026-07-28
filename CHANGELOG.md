@@ -8,6 +8,7 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ### Added
 
+- Delete a note: per-row Delete with confirm dialog, `DELETE /api/notes/:id` (204 / 404), hard delete in SQLite.
 - Create and list notes: SQLite `notes` table, `GET/POST /api/notes`, home UI with empty/loading/error/validation states.
 - Feature 1 AIDF artifacts: approved spec, design, UI foundation, mockup, plan, data model, API contract, migration.
 - Project bootstrap: Nuxt 4, Tailwind v4, Drizzle/SQLite plumbing, AIDF 5.0.0, health endpoint.
