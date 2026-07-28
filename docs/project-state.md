@@ -16,13 +16,13 @@ Bootstrap complete; begin Feature 1 (create & list notes) via AIDF Track C lifec
 
 ## Now
 
-- Human UI QA Preview for PR #1 (`docs/qa/001-create-and-list-notes-ui-signoff.md`)
-- Human PR review / merge after UI QA sign-off
+- Merge PR #1 to `develop` (QA sign-off approved; PR still open on GitHub as of last check)
+- Then start Feature 2 (delete a note) via AIDF `spec`
 
 ## Recently completed
 
-- Local Preview prepared at http://127.0.0.1:3000/ on revision `55e843d`
-- Feature 1 CI gates green; AI review ready-for-human
+- UI QA sign-off approved by Prishan Fernando (`docs/qa/001-create-and-list-notes-ui-signoff.md`)
+- Feature 1 implemented, AI-reviewed, CI green on the feature branch
 
 ## Next
 
