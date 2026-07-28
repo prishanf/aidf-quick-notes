@@ -12,35 +12,36 @@ manifest: project.yaml
 
 ## Current milestone
 
-Feature 2 (delete a note) — AI review complete; awaiting human PR review.
+**v0.1.0** production-approved — merging Features 1–2 (create/list + delete) to `main`.
 
 ## Now
 
-- Human review / merge of PR #2: https://github.com/prishanf/aidf-quick-notes/pull/2
-- After merge: Feature 3 (edit) via AIDF `spec` when ready
+- Commit ship docs on `develop`, merge to `main`, push
+- After push: Feature 3 (edit) via AIDF `spec` when ready
 
 ## Recently completed
 
-- Feature 2 build on `feat/002-delete-note`: confirm delete UI, `DELETE /api/notes/:id`, tests, AIDF docs
-- AI review posted; ready-for-human on PR #2
-- Feature 1 merged to `develop` (PR #1)
+- `ship` release docs + ADRs + operator wiki for v0.1.0
+- Production approval by prishanf for push to `main`
+- PR #1 and #2 merged to `develop`
 
 ## Next
 
-- Human PR approval on #2 (AI review is not sufficient)
-- Preview UI QA if required by `ui` tag gates on the host
-- Then merge to `develop`
+- Post-release follow-ups: Feature 2 UI QA sign-off; Track C labels on future PRs
+- Feature 3 (edit a note) via AIDF `spec`
 
 ## Risks and blockers
 
 | Item | Impact | Owner | Next action |
 |---|---|---|---|
-| Branch protection not yet configured | Gates remain advisory | prishanf | Protect `main`/`develop`, require CODEOWNERS |
-| Hard delete irreversible | Expected for Feature 2 | — | Documented in spec/API contract |
+| Feature 2 UI QA still missing | Accepted follow-up after prod cut | prishanf | Sign-off doc when convenient |
+| Branch protection not configured | Gates remain advisory | prishanf | Protect `main`/`develop`, require CODEOWNERS |
+| Hard delete irreversible | Data loss if no backup | — | ADR 0002; copy SQLite before risky cuts |
 
 ## Decisions and links
 
-- Product: Quick Notes — create/list, delete, edit
+- Product: Quick Notes — create/list, delete, edit (edit not yet shipped)
 - Repo: https://github.com/prishanf/aidf-quick-notes
-- Spec: `docs/specs/002-delete-note.md`
-- PR: https://github.com/prishanf/aidf-quick-notes/pull/2
+- Release: `docs/releases/v0.1.0.md`
+- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`
+- Operator wiki: `docs/wiki/local-operator-runbook.md`

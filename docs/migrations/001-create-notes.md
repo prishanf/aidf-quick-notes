@@ -2,7 +2,7 @@
 type: migration-plan
 track: C
 required_when: "the change carries the `database` tag"
-status: draft
+status: approved
 owner: prishanf
 created: 2026-07-28
 updated: 2026-07-28
@@ -60,4 +60,4 @@ Guardrails:
 
 ## Approval
 
-Tied to Feature 1 implementation plan approval.
+Tied to Feature 1 implementation plan approval (approved). Included in release draft `docs/releases/v0.1.0.md`; apply with `npm run db:migrate` before first run of that revision.

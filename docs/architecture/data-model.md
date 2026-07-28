@@ -7,6 +7,7 @@ owner: prishanf
 updated: 2026-07-28
 spec: docs/specs/001-create-and-list-notes.md
 schema_source: server/database/schema.ts
+release: docs/releases/v0.1.0.md
 ---
 
 # Data model: AIDF Quick Notes
@@ -22,7 +23,7 @@ schema_source: server/database/schema.ts
 
 ## Conceptual model
 
-A note is a short piece of text a person wants to keep: a required title and an optional body. There are no folders, tags, or owners. One SQLite file holds every note for that local instance. Feature 1 only creates and lists notes; later features may update or delete rows but do not change what a note is.
+A note is a short piece of text a person wants to keep: a required title and an optional body. There are no folders, tags, or owners. One SQLite file holds every note for that local instance. Create/list (Feature 1) and hard delete (Feature 2) do not change what a note is; edit (Feature 3) may update `title`/`body`/`updated_at` later without changing the entity.
 
 ```text
 note
@@ -100,7 +101,7 @@ Single entity. No relationships in Feature 1.
 
 | Role | Table | Read scope | Write scope | Enforced at |
 |---|---|---|---|---|
-| anonymous local caller | `notes` | all rows | create (Feature 1) | none — intentional for this example |
+| anonymous local caller | `notes` | all rows | create + hard delete (Features 1–2) | none — intentional for this example (ADR 0001) |
 
 Denied-path authorization tests are **not applicable** until auth exists. HTTP tests still cover validation failures (400).
 

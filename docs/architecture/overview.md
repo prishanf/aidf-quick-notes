@@ -29,3 +29,6 @@ Browser → Nuxt UI (app/) → Nitro (server/api/) → Drizzle → SQLite file
 - Data model: `docs/architecture/data-model.md` (created with Feature 1)
 - UI foundation: `docs/design/ui-foundation.md` (created with first `ui` feature)
 - Conventions: `docs/conventions.md`
+- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`
+- Operator wiki: `docs/wiki/local-operator-runbook.md`
+- Release: `docs/releases/v0.1.0.md`

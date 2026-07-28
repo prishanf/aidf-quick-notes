@@ -2,10 +2,11 @@
 type: api-contract
 track: C
 required_when: "the change carries the `api` tag"
-status: draft
+status: current
 owner: prishanf
 updated: 2026-07-28
 service: aidf-quick-notes
+release: docs/releases/v0.1.0.md
 ---
 
 # API contract: Notes

@@ -6,6 +6,10 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-28
+
+Release notes: `docs/releases/v0.1.0.md`.
+
 ### Added
 
 - Delete a note: per-row Delete with confirm dialog, `DELETE /api/notes/:id` (204 / 404), hard delete in SQLite.
