@@ -1,0 +1,112 @@
+# AIDF PR-time quality gates — reference implementation.
+#
+# Copy to .github/workflows/ in your project. This is a REFERENCE, not the
+# contract: standards/quality-gates.md is canonical, and any CI system that
+# produces the same corroborated evidence is equally compliant.
+#
+# What makes this more than a test runner: it emits evidence.json with
+# runner=ci, which is the only thing that satisfies an AIDF gate. See
+# standards/evidence.md.
+
+name: AIDF gates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate manifest
+        run: sh .aidf/reference/scripts/validate-manifest.sh project.yaml
+
+      # Classification comes from the PR's labels, which mirror the spec's
+      # front matter. A change with no risk labels is Track B by default —
+      # never Track A, which must be claimed deliberately.
+      - name: Derive classification
+        id: classify
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          TAGS=$(printf '%s' "$LABELS" | tr ',' '\n' \
+            | grep -E '^(ui|api|database|security|mcp-write|infra|dependency|release|docs)$' \
+            | paste -sd, - || true)
+          TRACK=B
+          printf '%s' "$LABELS" | grep -qw 'track-a' && TRACK=A
+          printf '%s' "$LABELS" | grep -qw 'track-c' && TRACK=C
+          echo "tags=$TAGS"   >> "$GITHUB_OUTPUT"
+          echo "track=$TRACK" >> "$GITHUB_OUTPUT"
+          echo "Track $TRACK · tags [${TAGS:-none}]" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install dependencies
+        run: |
+          CMD=$(sed -n 's/^  install: "\(.*\)"$/\1/p' project.yaml)
+          [ -n "$CMD" ] && sh -c "$CMD" || echo "no install command configured"
+
+      - name: Run required gates
+        id: gates
+        continue-on-error: true
+        env:
+          CI: "true"
+        run: |
+          sh .aidf/reference/scripts/run-gates.sh \
+            --track "${{ steps.classify.outputs.track }}" \
+            --tags  "${{ steps.classify.outputs.tags }}" \
+            --runner ci \
+            --out evidence.json
+
+      # The gate check is separate from the gate run so that a failed run still
+      # produces an uploaded artifact. A failure you cannot inspect is not
+      # evidence.
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aidf-evidence
+          path: evidence.json
+          if-no-files-found: error
+
+      - name: Enforce evidence contract
+        if: always()
+        run: sh .aidf/reference/scripts/validate-evidence.sh evidence.json project.yaml
+
+      - name: PR size budget
+        if: always()
+        continue-on-error: true   # advisory by design — see standards/quality-gates.md
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CAP=$(sed -n 's/^  pr_size_soft_cap_lines: \([0-9]*\)$/\1/p' project.yaml)
+          CAP=${CAP:-400}
+          LINES=$(git diff --numstat "$BASE" "$HEAD" \
+            | grep -vE '(lock|\.lock|-lock\.json|\.snap|/generated/|/vendor/)' \
+            | awk '{ s += $1 + $2 } END { print s+0 }')
+          echo "Changed lines (excluding generated): $LINES / $CAP" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$LINES" -gt "$CAP" ]; then
+            echo "::warning::PR is $LINES lines, over the $CAP soft cap. Split it, or justify the size in the description."
+          fi
+
+  # Track C requires a named specialist. Branch protection enforces the
+  # approval itself; this job makes the requirement visible on the PR.
+  specialist-review:
+    if: contains(github.event.pull_request.labels.*.name, 'track-c')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flag specialist requirement
+        run: |
+          echo "This change is Track C: it requires a named specialist review" >> "$GITHUB_STEP_SUMMARY"
+          echo "and a threat model, migration plan, or capability review per its tags." >> "$GITHUB_STEP_SUMMARY"

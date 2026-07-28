@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aidf.dev/schemas/evidence.schema.json",
+  "title": "AIDF evidence artifact",
+  "description": "Machine-readable record of what was executed against a commit. See standards/evidence.md. Only runner=ci corroborates a gate; runner=agent is claimed evidence by definition.",
+  "type": "object",
+  "required": ["schema_version", "commit", "runner", "generated_at", "classification", "checks", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1" },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$",
+      "description": "The exact revision the checks ran against."
+    },
+    "runner": {
+      "type": "string",
+      "enum": ["ci", "local", "agent"],
+      "description": "Who produced this file. 'agent' is never corroborating."
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "run_url": { "type": "string", "description": "Link to the CI run, when runner=ci." },
+    "classification": {
+      "type": "object",
+      "required": ["track", "risk", "tags"],
+      "additionalProperties": false,
+      "properties": {
+        "track": { "type": "string", "enum": ["A", "B", "C"] },
+        "risk": { "type": "string", "enum": ["low", "standard", "high"] },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["ui", "api", "database", "security", "mcp-write", "infra", "dependency", "release", "docs"]
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "One entry per command executed. exit_code 0 is pass; anything else is fail.",
+      "items": {
+        "type": "object",
+        "required": ["name", "command", "exit_code"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "log_url": { "type": "string" }
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "description": "Gate outcomes derived from checks, human approvals, or waivers.",
+      "items": {
+        "type": "object",
+        "required": ["name", "status", "source"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["pass", "fail", "not_run", "waived"],
+            "description": "not_run never counts as pass. Gates fail closed."
+          },
+          "source": { "type": "string", "enum": ["ci", "human", "waiver"] },
+          "waiver": {
+            "type": "object",
+            "description": "Required when status=waived. A waiver without an expiry and a follow-up is invalid.",
+            "required": ["approver", "reason", "expires", "follow_up"],
+            "additionalProperties": false,
+            "properties": {
+              "approver": { "type": "string" },
+              "reason": { "type": "string" },
+              "expires": { "type": "string", "format": "date" },
+              "follow_up": { "type": "string" }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "waived" } }, "required": ["status"] },
+            "then": { "required": ["waiver"] }
+          }
+        ]
+      }
+    }
+  }
+}

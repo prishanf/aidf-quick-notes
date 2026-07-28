@@ -1,0 +1,178 @@
+# AIDF project manifest.
+# Validated by reference/scripts/validate-manifest.sh against schemas/project.schema.json.
+# An empty required command means the gate FAILS. It never means "skip".
+
+framework:
+  name: ai-development-framework
+  version: 5.0.0
+  project_id: replace-with-project-id
+  # Where the vendored framework lives in this repository. One directory,
+  # so project folders are not interleaved with framework reference material.
+  # Installed and upgraded by reference/scripts/aidf-install.sh.
+  root: .aidf
+
+# GitFlow by default: main (production) + develop (QA, continuously deployed)
+# as long-lived branches, feature/fix/release/hotfix as short-lived ones. See
+# standards/branching.md. To opt out and run trunk-based instead, set
+# integration_branch to main and qa_branch to "" -- and record why in the
+# project's own documentation.
+repository:
+  integration_branch: develop
+  production_branch: main
+  feature_branch_pattern: "feat/{issue}-{slug}"
+  release_branch_pattern: "release/{version}"
+  hotfix_branch_pattern: "hotfix/{issue}-{slug}"
+  # Required for parallel work, long-running or Track C changes, and for the
+  # persistent main/develop checkouts GitFlow assumes. See standards/worktrees.md.
+  worktree_policy: required-for-track-c-recommended-otherwise
+  # The branch whose deployment is the QA environment. "develop" under the
+  # default GitFlow model; leave empty only when opting out (trunk-based).
+  qa_branch: develop
+
+commands:
+  install: ""
+  format: ""
+  lint: ""
+  typecheck: ""
+  test: ""
+  build: ""
+  # Optional; only required when the corresponding tag is used.
+  migrate: ""
+  seed: ""
+  smoke: ""
+  # Serves the design mockup over HTTP. Required when the `ui` tag is used:
+  # a mockup opened from the filesystem cannot fetch its own fixtures.
+  mockup_serve: ""
+
+documents:
+  root: docs
+  specs: docs/specs
+  plans: docs/plans
+  architecture: docs/architecture
+  data_model: docs/architecture/data-model.md   # ERD + data dictionary; required by the `database` tag
+  changelog: CHANGELOG.md                       # required entry for Track B/C; optional for Track A
+  decisions: docs/decisions
+  wiki: docs/wiki
+  designs: docs/design         # design docs + throwaway mockups; see standards/ui-and-preview.md
+  releases: docs/releases
+  state: docs/project-state.md
+  conventions: docs/conventions.md
+  environments: docs/environments.md
+  migrations: docs/migrations
+  api_contracts: docs/api
+  mcp_capabilities: docs/mcp
+  deployments: docs/deployments
+
+# Five gates, not ten. Each maps to something a human or CI actually enforces.
+gates:
+  spec_approval_required: true          # Track B and C cannot proceed without it
+  plan_approval_required: true          # Track B and C: no code until the plan is approved
+  pull_request_approval_required: true  # every PR, every track
+  specialist_review_required: true      # Track C: named reviewer for security/database/infra
+  production_approval_required: true    # every production deployment (release/<version> -> main)
+
+# Which runners may satisfy a gate. See standards/evidence.md.
+# `local` is off by default: a gate satisfied on a developer machine is not
+# reproducible and cannot be audited after the fact.
+evidence:
+  corroborating_runners: [ci]
+  allow_local_runner: false
+  require_evidence_artifact: true
+  pr_size_soft_cap_lines: 400
+
+# Risk tags are DEFINED in standards/quality-gates.md. This section only enables
+# them and binds project-specific commands. Do not restate what a tag requires.
+tags:
+  enabled: [ui, api, database, security, mcp-write, infra, dependency, release, docs]
+  preview_required_for: [ui, api, database]
+  track_c_forced_by: [database, security, mcp-write, infra, release]
+
+environments:
+  local:
+    required: true
+    data_policy: synthetic-or-developer-owned
+  preview:
+    required_for_tags: [ui, api, database]
+    state: isolated-and-ephemeral
+    data_policy: approved-production-clone-plus-synthetic-data
+    cleanup: on-pull-request-close
+  qa:
+    enabled: true       # continuously deployed from repository.qa_branch (develop)
+    state: resettable
+    data_policy: approved-non-production-data
+  production:
+    protected: true
+    data_policy: real-data
+
+database:
+  migration_types: [drizzle, raw-sql]
+  migration_policy: versioned-forward-only
+  production_clone_policy: explicit-data-owner-approval-required
+  synthetic_seed_policy: required-for-preview-scenarios
+  production_seed_policy: prohibited-except-approved-reference-data
+  application_role_may_migrate: false
+  # The `database` tag requires a data model document -- ERD, data dictionary,
+  # classification, retention, authorization mapping. See templates/data-model.md.
+  data_model_required: true
+
+# UI foundation and the design/mockup contract. See standards/ui-and-preview.md.
+ui:
+  # Tailwind is the framework default. Choosing otherwise is allowed, but record
+  # the reason in the UI foundation document rather than per feature.
+  css_framework: tailwind
+  # The single source of design values, as CSS custom properties. Both the
+  # application and the design mockup read THIS file -- that shared artifact is
+  # what keeps the prototype visually truthful. Tailwind is wired to it.
+  tokens: app/assets/css/tokens.css
+  tailwind_config: ""            # v3 only; v4 wires the theme inside `tokens`
+  # Written once, on the first `ui` change; extended by later ones, never
+  # re-derived. templates/ui-foundation.md.
+  foundation_doc: docs/design/ui-foundation.md
+  mockup_root: docs/design/mockups
+  breakpoints: [sm, md, lg, xl]  # names must match the foundation document
+  dark_mode: class               # class | media | none
+
+api:
+  contract_required_for_changed_apis: true
+  nfr_targets: project-defined-or-explicitly-pending
+  authorization_tests_required: true
+  # Endpoint coverage, enforced by reference/scripts/check-api-coverage.sh.
+  # A route with no test that exercises it over HTTP fails the `api` gate --
+  # a unit test of the handler's helpers is not endpoint coverage.
+  route_root: server/api               # directory whose structure mirrors the URL
+  route_url_prefix: /api               # what route_root maps to in a URL
+  route_globs: ["server/api/**/*.ts"]  # every endpoint file
+  test_globs: ["tests/**/*.test.ts"]   # where the checker looks for coverage
+  http_test_hints: []                  # extra harness tokens, e.g. ["myClient("]
+  coverage_waivers: []                 # e.g. ["GET /api/health"] -- state why in the PR
+
+mcp:
+  enabled: false
+  protocol_revision: ""
+  direct_database_tools: prohibited
+  authenticated_writes: explicit-human-confirmation-required
+  audit_events_required: true
+
+security:
+  secrets_in_worktrees: forbidden
+  destructive_actions: ask-first
+  external_messages: human-confirmed
+  server_side_input_validation: required
+  object_level_authorization_tests: required
+  secret_scanning: required
+  threat_model_for_high_risk_changes: required
+
+# Agent-workflow safety. See standards/ai-safety.md.
+ai_safety:
+  untrusted_content_is_data: true
+  code_egress_policy: replace-with-your-policy   # e.g. all-source-permitted | no-customer-data | approved-repos-only
+  agent_credential_scope: least-privilege-per-session
+  mcp_servers_pinned: true
+
+adapters:
+  enabled: [generic]
+  instruction_files:
+    generic: AGENTS.md
+    claude: .claude/CLAUDE.md
+    codex: .codex/AGENTS.md
+    cursor: .cursor/rules/aidf.mdc

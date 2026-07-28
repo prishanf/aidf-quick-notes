@@ -1,0 +1,26 @@
+/* Design tokens — shared by the Nuxt app and design mockups.
+   Extended by the first ui-tagged feature (ui-foundation). */
+
+:root {
+  --color-surface: #f7f5f1;
+  --color-surface-raised: #ffffff;
+  --color-ink: #1c1917;
+  --color-ink-muted: #57534e;
+  --color-border: #d6d3d1;
+  --color-accent: #0f766e;
+  --color-accent-ink: #ffffff;
+  --color-danger: #b91c1c;
+
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-display: "Source Serif 4", Georgia, serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+}

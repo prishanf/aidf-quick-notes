@@ -1,0 +1,376 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aidf.dev/schemas/project.schema.json",
+  "title": "AIDF project manifest",
+  "description": "Contract for project.yaml. additionalProperties is false throughout so that a typo'd key fails loudly instead of silently disabling a gate.",
+  "type": "object",
+  "required": [
+    "framework",
+    "repository",
+    "commands",
+    "documents",
+    "gates",
+    "evidence",
+    "tags",
+    "environments"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "framework": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "project_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "ai-development-framework"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "not": {
+            "const": "replace-with-project-id"
+          }
+        },
+        "root": {
+          "type": "string",
+          "description": "Directory holding the vendored framework, e.g. '.aidf'. Empty in the framework repository itself."
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "integration_branch",
+        "production_branch",
+        "feature_branch_pattern"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "integration_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "production_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "feature_branch_pattern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "release_branch_pattern": {
+          "type": "string"
+        },
+        "hotfix_branch_pattern": {
+          "type": "string"
+        },
+        "worktree_policy": {
+          "type": "string"
+        },
+        "qa_branch": {
+          "type": "string"
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "description": "An empty string is a FAILING gate, not a skip. Enforced by validate-manifest.sh.",
+      "required": [
+        "lint",
+        "test",
+        "build"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "install": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "lint": {
+          "type": "string"
+        },
+        "typecheck": {
+          "type": "string"
+        },
+        "test": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "migrate": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "string"
+        },
+        "smoke": {
+          "type": "string"
+        },
+        "mockup_serve": {
+          "type": "string"
+        }
+      }
+    },
+    "documents": {
+      "type": "object",
+      "required": [
+        "root"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      },
+      "properties": {
+        "root": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": [
+        "spec_approval_required",
+        "plan_approval_required",
+        "pull_request_approval_required",
+        "specialist_review_required",
+        "production_approval_required"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "spec_approval_required": {
+          "type": "boolean"
+        },
+        "plan_approval_required": {
+          "type": "boolean"
+        },
+        "pull_request_approval_required": {
+          "type": "boolean"
+        },
+        "specialist_review_required": {
+          "type": "boolean"
+        },
+        "production_approval_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "corroborating_runners",
+        "require_evidence_artifact"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "corroborating_runners": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "ci",
+              "local"
+            ]
+          },
+          "description": "'agent' is deliberately not permitted here. An agent cannot corroborate its own work."
+        },
+        "allow_local_runner": {
+          "type": "boolean"
+        },
+        "require_evidence_artifact": {
+          "type": "boolean"
+        },
+        "pr_size_soft_cap_lines": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "tags": {
+      "type": "object",
+      "description": "References tag names defined in standards/quality-gates.md. Never redefines what a tag requires.",
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/tag"
+          }
+        },
+        "preview_required_for": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/tag"
+          }
+        },
+        "track_c_forced_by": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/tag"
+          }
+        }
+      }
+    },
+    "environments": {
+      "type": "object"
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "data_model_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "api": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_required_for_changed_apis": {
+          "type": "boolean"
+        },
+        "nfr_targets": {
+          "type": "string"
+        },
+        "authorization_tests_required": {
+          "type": "boolean"
+        },
+        "route_root": {
+          "type": "string"
+        },
+        "route_url_prefix": {
+          "type": "string"
+        },
+        "route_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Endpoint files. Required when the `api` tag is used; check-api-coverage.sh fails closed without it."
+        },
+        "test_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "http_test_hints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coverage_waivers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "object"
+    },
+    "security": {
+      "type": "object"
+    },
+    "ai_safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "untrusted_content_is_data": {
+          "type": "boolean"
+        },
+        "code_egress_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agent_credential_scope": {
+          "type": "string"
+        },
+        "mcp_servers_pinned": {
+          "type": "boolean"
+        }
+      }
+    },
+    "adapters": {
+      "type": "object"
+    },
+    "ui": {
+      "type": "object",
+      "description": "UI foundation and design-mockup contract. See standards/ui-and-preview.md.",
+      "additionalProperties": false,
+      "properties": {
+        "css_framework": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tokens": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The token layer both the application and the mockup read."
+        },
+        "tailwind_config": {
+          "type": "string"
+        },
+        "foundation_doc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mockup_root": {
+          "type": "string"
+        },
+        "breakpoints": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "dark_mode": {
+          "type": "string",
+          "enum": [
+            "class",
+            "media",
+            "none"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "tag": {
+      "type": "string",
+      "enum": [
+        "ui",
+        "api",
+        "database",
+        "security",
+        "mcp-write",
+        "infra",
+        "dependency",
+        "release",
+        "docs"
+      ]
+    }
+  }
+}

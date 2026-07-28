@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit record — design mockup</title>
+    <!-- Load order matters and is verified: the boot script inlines the shared
+         token layer as a `text/tailwindcss` style, then Tailwind's browser build
+         compiles it. @tailwindcss/browser resolves no @import at all -- pointing
+         it at ./css/tokens.css compiles to an empty stylesheet, silently. -->
+    <script src="./js/tailwind-boot.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="./css/mockup.css" />
+  </head>
+  <body>
+    <div id="shell"></div>
+    <main id="content" class="mx-auto max-w-7xl px-4 py-6"></main>
+    <script type="module" src="./js/detail.js"></script>
+  </body>
+</html>

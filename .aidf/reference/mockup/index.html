@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design mockup — &lt;feature name&gt;</title>
+
+    <!--
+      Tailwind, the same way the application uses it, so the prototype resolves
+      the exact values the product will — with no build step.
+
+      Load order matters and is verified. The boot script inlines the shared
+      token layer as a `text/tailwindcss` style; Tailwind's browser build then
+      compiles it. Do NOT replace this with `@import "./css/tokens.css"` inside
+      the style tag: @tailwindcss/browser resolves no @import at all, and the
+      page compiles to an empty stylesheet, silently.
+
+      Offline or air-gapped review: replace the CDN script with a stylesheet
+      compiled once (`npx @tailwindcss/cli -i css/tokens.css -o css/tailwind.css`)
+      and commit it into css/. What must NOT happen is the mockup falling back
+      to a hand-written palette of its own — then the design approval covers
+      colours the product does not have.
+    -->
+    <script src="./js/tailwind-boot.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="./css/mockup.css" />
+  </head>
+
+  <body>
+    <div id="shell"></div>
+
+    <main id="content" class="mx-auto max-w-4xl px-4 py-8">
+      <h1 class="text-2xl font-semibold">&lt;Feature name&gt; — design mockup</h1>
+      <p class="mt-2 max-w-2xl text-sm text-text-muted">
+        Throwaway prototype for the design gate. Fabricated data, no backend, no
+        production code quality. It exists so layout, density, and flow can be
+        judged and changed before an implementation plan is written.
+        <strong class="font-medium text-text">Its markup will not be reused</strong>
+        &mdash; only the token layer it shares with the application.
+      </p>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">Screens</h2>
+        <ul class="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface">
+          <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3">
+            <a href="./list.html" class="font-medium text-primary hover:underline">Records</a>
+            <span class="text-sm text-text-muted">Data-dense table, filters, totals, add and remove</span>
+          </li>
+          <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3">
+            <a href="./detail.html" class="font-medium text-primary hover:underline">Edit record</a>
+            <span class="text-sm text-text-muted">Form, per-field validation, save confirmation</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">States</h2>
+        <p class="mt-1 text-sm text-text-muted">
+          Every state named in the design doc is reachable by a click, not only
+          described. The selector in the header switches state on any screen.
+        </p>
+        <div class="mt-3 overflow-x-auto rounded-lg border border-border bg-surface">
+          <table class="w-full min-w-xl text-sm">
+            <thead>
+              <tr class="border-b border-border text-left text-xs tracking-wide text-text-muted uppercase">
+                <th scope="col" class="px-4 py-2.5 font-medium">State</th>
+                <th scope="col" class="px-4 py-2.5 font-medium">Records</th>
+                <th scope="col" class="px-4 py-2.5 font-medium">Edit record</th>
+              </tr>
+            </thead>
+            <tbody class="[&_a]:text-primary [&_a:hover]:underline">
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Success</td>
+                <td class="px-4 py-2.5"><a href="./list.html">open</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Loading</td>
+                <td class="px-4 py-2.5"><a href="./list.html?state=loading">open</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html?state=loading">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Empty</td>
+                <td class="px-4 py-2.5"><a href="./list.html?state=empty">open</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html?state=empty">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Error</td>
+                <td class="px-4 py-2.5"><a href="./list.html?state=error">open</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html?state=error">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Permission error</td>
+                <td class="px-4 py-2.5"><a href="./list.html?state=forbidden">open</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html?state=forbidden">open</a></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2.5">Validation error</td>
+                <td class="px-4 py-2.5"><a href="./list.html">add record, submit a bad amount</a></td>
+                <td class="px-4 py-2.5"><a href="./detail.html">save with an empty label</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">What to exercise</h2>
+        <p class="mt-1 text-sm text-text-muted">
+          Replace this list with the questions this design gate is actually
+          asking. A reviewer who has to guess will review the wrong thing.
+        </p>
+        <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm">
+          <li>Is the table scannable at 32 rows? Is the column order right?</li>
+          <li>Do negative amounts read clearly without relying on colour alone?</li>
+          <li>Narrow the window to <span class="font-mono text-xs">&lt; 40rem</span>: does the table scroll in its own container, and does the page body stay put?</li>
+          <li>Tab through Records with the keyboard only. Is focus visible and the order sensible?</li>
+          <li>Are the empty state and the filtered-to-nothing state distinguishable, with the right recovery in each?</li>
+          <li>Toggle Theme: does anything become unreadable in dark mode?</li>
+        </ul>
+      </section>
+
+      <section class="mt-8 rounded-lg border border-border bg-surface p-4 text-sm">
+        <h2 class="font-semibold">Feedback goes in the design document</h2>
+        <p class="mt-1 text-text-muted">
+          Nothing is built yet, so layout, flow, and scope can still change
+          freely and cheaply. Record feedback in the design doc and re-approve
+          &mdash; not on a pull request, which does not exist.
+        </p>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountShell } from "./js/shell.js";
+      mountShell({ screen: "index" });
+    </script>
+  </body>
+</html>

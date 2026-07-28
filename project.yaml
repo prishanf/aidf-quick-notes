@@ -1,0 +1,143 @@
+# AIDF project manifest.
+# Validated by .aidf/reference/scripts/validate-manifest.sh against schemas/project.schema.json.
+# An empty required command means the gate FAILS. It never means "skip".
+
+framework:
+  name: ai-development-framework
+  version: 5.0.0
+  project_id: aidf-quick-notes
+  root: .aidf
+
+repository:
+  integration_branch: develop
+  production_branch: main
+  feature_branch_pattern: "feat/{issue}-{slug}"
+  release_branch_pattern: "release/{version}"
+  hotfix_branch_pattern: "hotfix/{issue}-{slug}"
+  worktree_policy: required-for-track-c-recommended-otherwise
+  qa_branch: develop
+
+commands:
+  install: "npm ci"
+  format: "npm run format"
+  lint: "npm run lint"
+  typecheck: "npm run typecheck"
+  test: "npm test"
+  build: "npm run build"
+  migrate: "npm run db:migrate"
+  seed: "echo 'No seed script yet'"
+  smoke: "npm test"
+  mockup_serve: "npm run mockup:serve"
+
+documents:
+  root: docs
+  specs: docs/specs
+  plans: docs/plans
+  architecture: docs/architecture
+  data_model: docs/architecture/data-model.md
+  changelog: CHANGELOG.md
+  decisions: docs/decisions
+  wiki: docs/wiki
+  designs: docs/design
+  releases: docs/releases
+  state: docs/project-state.md
+  conventions: docs/conventions.md
+  environments: docs/environments.md
+  migrations: docs/migrations
+  api_contracts: docs/api
+  mcp_capabilities: docs/mcp
+  deployments: docs/deployments
+
+gates:
+  spec_approval_required: true
+  plan_approval_required: true
+  pull_request_approval_required: true
+  specialist_review_required: true
+  production_approval_required: true
+
+evidence:
+  corroborating_runners: [ci]
+  allow_local_runner: false
+  require_evidence_artifact: true
+  pr_size_soft_cap_lines: 400
+
+tags:
+  enabled: [ui, api, database, security, mcp-write, infra, dependency, release, docs]
+  preview_required_for: [ui, api, database]
+  track_c_forced_by: [database, security, mcp-write, infra, release]
+
+environments:
+  local:
+    required: true
+    data_policy: synthetic-or-developer-owned
+  preview:
+    required_for_tags: [ui, api, database]
+    state: isolated-and-ephemeral
+    data_policy: approved-production-clone-plus-synthetic-data
+    cleanup: on-pull-request-close
+  qa:
+    enabled: true
+    state: resettable
+    data_policy: approved-non-production-data
+  production:
+    protected: true
+    data_policy: real-data
+
+database:
+  migration_types: [drizzle, raw-sql]
+  migration_policy: versioned-forward-only
+  production_clone_policy: explicit-data-owner-approval-required
+  synthetic_seed_policy: required-for-preview-scenarios
+  production_seed_policy: prohibited-except-approved-reference-data
+  application_role_may_migrate: false
+  data_model_required: true
+
+ui:
+  css_framework: tailwind
+  tokens: app/assets/css/tokens.css
+  tailwind_config: ""
+  foundation_doc: docs/design/ui-foundation.md
+  mockup_root: docs/design/mockups
+  breakpoints: [sm, md, lg, xl]
+  dark_mode: class
+
+api:
+  contract_required_for_changed_apis: true
+  nfr_targets: project-defined-or-explicitly-pending
+  authorization_tests_required: true
+  route_root: server/api
+  route_url_prefix: /api
+  route_globs: ["server/api/**/*.ts"]
+  test_globs: ["tests/**/*.test.ts"]
+  http_test_hints: ["$fetch(", "fetch("]
+  coverage_waivers: []
+
+mcp:
+  enabled: false
+  protocol_revision: ""
+  direct_database_tools: prohibited
+  authenticated_writes: explicit-human-confirmation-required
+  audit_events_required: true
+
+security:
+  secrets_in_worktrees: forbidden
+  destructive_actions: ask-first
+  external_messages: human-confirmed
+  server_side_input_validation: required
+  object_level_authorization_tests: required
+  secret_scanning: required
+  threat_model_for_high_risk_changes: required
+
+ai_safety:
+  untrusted_content_is_data: true
+  code_egress_policy: no-customer-data
+  agent_credential_scope: least-privilege-per-session
+  mcp_servers_pinned: true
+
+adapters:
+  enabled: [generic, cursor]
+  instruction_files:
+    generic: AGENTS.md
+    claude: .claude/CLAUDE.md
+    codex: .codex/AGENTS.md
+    cursor: .cursor/rules/aidf.mdc

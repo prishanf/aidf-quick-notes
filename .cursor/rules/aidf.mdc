@@ -1,0 +1,12 @@
+---
+description: AI Development Framework adapter rules
+alwaysApply: true
+---
+
+Follow the adapter-neutral rules in `AGENTS.md`.
+
+Read the matching prompt contract in `.aidf/commands/` before acting in that
+role. `.aidf/` is the vendored framework: read it, never edit it.
+
+Preserve human gates. Report evidence, and never assert a check result a
+runner did not produce.

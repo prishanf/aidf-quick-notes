@@ -1,0 +1,44 @@
+# AIDF CODEOWNERS — reference implementation. Copy to .github/CODEOWNERS.
+#
+# Track C requires a NAMED specialist review. A rule in a document cannot
+# enforce that; a CODEOWNERS entry plus "require review from Code Owners" in
+# branch protection can. This file is how the specialist-review gate stops
+# being advice and starts being a control.
+#
+# Replace the placeholder teams with your own.
+
+# Default owners for everything not matched below.
+*                           @your-org/maintainers
+
+# `security` tag — auth, permissions, secrets, crypto.
+/src/auth/                  @your-org/security
+/src/**/permissions*        @your-org/security
+**/*auth*                   @your-org/security
+**/*crypto*                 @your-org/security
+
+# `database` tag — migrations are immutable once released; review before merge.
+/migrations/                @your-org/data
+/db/                        @your-org/data
+**/schema.*                 @your-org/data
+
+# `infra` tag — blast radius is the whole environment.
+/infra/                     @your-org/platform
+/terraform/                 @your-org/platform
+/.github/workflows/         @your-org/platform
+/Dockerfile                 @your-org/platform
+
+# `dependency` tag — supply chain.
+/package.json               @your-org/maintainers
+/package-lock.json          @your-org/maintainers
+/pnpm-lock.yaml             @your-org/maintainers
+/requirements*.txt          @your-org/maintainers
+/go.mod                     @your-org/maintainers
+
+# `mcp-write` tag — anything an agent can invoke to mutate state.
+/src/mcp/                   @your-org/security @your-org/platform
+
+# The framework's own rules. Changing a gate should be as reviewed as the code
+# the gate protects.
+/project.yaml               @your-org/maintainers
+/standards/                 @your-org/maintainers
+/schemas/                   @your-org/maintainers

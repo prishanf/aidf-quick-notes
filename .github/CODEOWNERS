@@ -1,0 +1,15 @@
+# AIDF CODEOWNERS
+
+*                           @prishanf
+
+# database tag — migrations and schema
+/server/database/           @prishanf
+**/schema.*                 @prishanf
+
+# infra / workflows
+/.github/workflows/         @prishanf
+
+# dependency / manifest
+/package.json               @prishanf
+/package-lock.json          @prishanf
+/project.yaml               @prishanf
