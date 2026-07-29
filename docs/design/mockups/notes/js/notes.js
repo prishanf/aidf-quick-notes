@@ -22,6 +22,8 @@ mountShell({ screen: "notes" });
 
 const host = document.getElementById("content");
 let createFieldErrors = {};
+let createDraft = { title: "", body: "" };
+let createPreview = false;
 let deleteError = "";
 let editError = "";
 let pendingDeleteId = null;
@@ -29,7 +31,16 @@ let deleting = false;
 let editingId = null;
 let editFormData = { title: "", body: "" };
 let editFieldErrors = {};
+let editPreview = false;
 let saving = false;
+
+// Safe CommonMark subset renderer: raw HTML in the body is escaped, not
+// executed (html: false). Mirrors the dependency choice in
+// docs/specs/004-markdown-note-body.md so this mockup previews real behavior.
+const md = window.markdownit({ html: false, linkify: true, breaks: true });
+function renderMarkdown(text) {
+  return text ? md.render(text) : "";
+}
 
 // Mock state for testing different UI states
 const urlParams = new URLSearchParams(window.location.search);
@@ -102,6 +113,7 @@ function render() {
           <div>
             <label for="title" class="block text-sm font-medium">Title</label>
             <input id="title" name="title" type="text" maxlength="120" required
+              value="${escapeHtml(createDraft.title)}"
               aria-describedby="${createFieldErrors.title ? "title-error" : "title-hint"}"
               aria-invalid="${createFieldErrors.title ? "true" : "false"}"
               class="mt-1 w-full rounded-md border ${createFieldErrors.title ? "border-danger" : "border-border"} bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus" />
@@ -113,11 +125,33 @@ function render() {
             }
           </div>
           <div>
-            <label for="body" class="block text-sm font-medium">Body</label>
-            <textarea id="body" name="body" rows="4" maxlength="5000"
-              aria-describedby="body-hint"
-              class="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"></textarea>
-            <p id="body-hint" class="mt-1 text-xs text-text-muted">Optional. Up to 5000 characters.</p>
+            <div class="flex items-center justify-between">
+              <label for="body" class="block text-sm font-medium">Body</label>
+              <div class="inline-flex overflow-hidden rounded-md border border-border" role="group" aria-label="Body editing mode">
+                <button type="button" id="create-write-tab" aria-pressed="${!createPreview}"
+                  class="px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${!createPreview ? "bg-surface-sunken text-text" : "text-text-muted hover:text-text"}">
+                  Write
+                </button>
+                <button type="button" id="create-preview-tab" aria-pressed="${createPreview}"
+                  class="border-l border-border px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${createPreview ? "bg-surface-sunken text-text" : "text-text-muted hover:text-text"}">
+                  Preview
+                </button>
+              </div>
+            </div>
+            ${
+              createPreview
+                ? `<div class="mt-1 min-h-[6.5rem] w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text">
+                    ${
+                      createDraft.body
+                        ? `<div class="rendered-md">${renderMarkdown(createDraft.body)}</div>`
+                        : `<p class="text-sm text-text-muted italic">Nothing to preview yet — write some Markdown first.</p>`
+                    }
+                   </div>`
+                : `<textarea id="body" name="body" rows="4" maxlength="5000"
+                    aria-describedby="body-hint"
+                    class="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${escapeHtml(createDraft.body)}</textarea>`
+            }
+            <p id="body-hint" class="mt-1 text-xs text-text-muted">Optional. Up to 5000 characters. Markdown supported: headings, bold/italic, links, lists, code, blockquotes.</p>
           </div>
           <div class="flex items-center gap-3">
             <button type="submit"
@@ -218,6 +252,7 @@ function render() {
           editingId = n.id;
           editFormData = { title: n.title, body: n.body };
           editFieldErrors = {};
+          editPreview = false;
           render();
           setTimeout(() => {
             host.querySelector(`#edit-title-${n.id}`)?.focus();
@@ -236,6 +271,20 @@ function render() {
   }
 
   host.querySelector("#create-form")?.addEventListener("submit", onCreateSubmit);
+  host.querySelector("#title")?.addEventListener("input", (e) => {
+    createDraft.title = e.target.value;
+  });
+  host.querySelector("#body")?.addEventListener("input", (e) => {
+    createDraft.body = e.target.value;
+  });
+  host.querySelector("#create-write-tab")?.addEventListener("click", () => {
+    createPreview = false;
+    render();
+  });
+  host.querySelector("#create-preview-tab")?.addEventListener("click", () => {
+    createPreview = true;
+    render();
+  });
   host.querySelector("#dismiss-delete-error")?.addEventListener("click", () => {
     deleteError = "";
     render();
@@ -280,11 +329,35 @@ function renderNote(n) {
             }
           </div>
           <div>
-            <label for="edit-body-${n.id}" class="block text-sm font-medium">Body</label>
-            <textarea id="edit-body-${n.id}" name="body" rows="4" maxlength="5000"
-              ${saving ? "disabled" : ""}
-              class="w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${escapeHtml(editFormData.body)}</textarea>
-            <p class="mt-1 text-xs text-text-muted">Optional. Up to 5000 characters.</p>
+            <div class="flex items-center justify-between">
+              <label for="edit-body-${n.id}" class="block text-sm font-medium">Body</label>
+              <div class="inline-flex overflow-hidden rounded-md border border-border" role="group" aria-label="Body editing mode">
+                <button type="button" id="edit-write-tab-${n.id}" aria-pressed="${!editPreview}"
+                  ${saving ? "disabled" : ""}
+                  class="px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${!editPreview ? "bg-surface-sunken text-text" : "text-text-muted hover:text-text"}">
+                  Write
+                </button>
+                <button type="button" id="edit-preview-tab-${n.id}" aria-pressed="${editPreview}"
+                  ${saving ? "disabled" : ""}
+                  class="border-l border-border px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${editPreview ? "bg-surface-sunken text-text" : "text-text-muted hover:text-text"}">
+                  Preview
+                </button>
+              </div>
+            </div>
+            ${
+              editPreview
+                ? `<div class="mt-1 min-h-[5.5rem] w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text">
+                    ${
+                      editFormData.body
+                        ? `<div class="rendered-md">${renderMarkdown(editFormData.body)}</div>`
+                        : `<p class="text-sm text-text-muted italic">Nothing to preview yet — write some Markdown first.</p>`
+                    }
+                   </div>`
+                : `<textarea id="edit-body-${n.id}" name="body" rows="4" maxlength="5000"
+                    ${saving ? "disabled" : ""}
+                    class="w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${escapeHtml(editFormData.body)}</textarea>`
+            }
+            <p class="mt-1 text-xs text-text-muted">Optional. Up to 5000 characters. Markdown supported.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button type="submit" id="save-btn-${n.id}"
@@ -308,9 +381,9 @@ function renderNote(n) {
       <article class="flex items-start justify-between gap-3">
         <div class="min-w-0 flex-1">
           <h3 class="font-semibold text-text">${escapeHtml(n.title)}</h3>
-          <p class="mt-1 text-sm text-text-muted whitespace-pre-wrap">${
-            n.body ? escapeHtml(n.body) : `<span>${fmt.empty}</span>`
-          }</p>
+          <div class="mt-1 text-sm text-text-muted">${
+            n.body ? `<div class="rendered-md">${renderMarkdown(n.body)}</div>` : `<span>${fmt.empty}</span>`
+          }</div>
           <p class="mt-2 text-xs text-text-muted">
             <time datetime="${n.updated_at}">${fmt.dateTime(n.updated_at)}</time>
           </p>
@@ -343,10 +416,26 @@ function setupEditForm(n) {
     await onEditSubmit(n.id);
   });
 
+  host.querySelector(`#edit-title-${n.id}`)?.addEventListener("input", (e) => {
+    editFormData.title = e.target.value;
+  });
+  host.querySelector(`#edit-body-${n.id}`)?.addEventListener("input", (e) => {
+    editFormData.body = e.target.value;
+  });
+  host.querySelector(`#edit-write-tab-${n.id}`)?.addEventListener("click", () => {
+    editPreview = false;
+    render();
+  });
+  host.querySelector(`#edit-preview-tab-${n.id}`)?.addEventListener("click", () => {
+    editPreview = true;
+    render();
+  });
+
   host.querySelector(`#cancel-btn-${n.id}`)?.addEventListener("click", () => {
     editingId = null;
     editFormData = { title: "", body: "" };
     editFieldErrors = {};
+    editPreview = false;
     render();
   });
 }
@@ -354,9 +443,10 @@ function setupEditForm(n) {
 async function onEditSubmit(noteId) {
   if (saving) return;
 
-  const form = host.querySelector(`#edit-form-${noteId}`);
-  const title = form?.querySelector("input[name='title']")?.value?.trim() || "";
-  const body = form?.querySelector("textarea[name='body']")?.value || "";
+  // Read from editFormData, not the DOM: the body textarea does not exist
+  // while the Preview tab is showing rendered output instead.
+  const title = editFormData.title.trim();
+  const body = editFormData.body;
 
   editFieldErrors = {};
 
@@ -393,6 +483,7 @@ async function onEditSubmit(noteId) {
     editingId = null;
     editFormData = { title: "", body: "" };
     editFieldErrors = {};
+    editPreview = false;
     saving = false;
     editError = "";
     announce("Note saved");
@@ -431,9 +522,8 @@ async function onConfirmDelete() {
 
 function onCreateSubmit(event) {
   event.preventDefault();
-  const form = event.target;
-  const title = form.title.value.trim();
-  const body = form.body.value;
+  const title = createDraft.title.trim();
+  const body = createDraft.body;
 
   createFieldErrors = {};
   if (!title) {
@@ -456,7 +546,9 @@ function onCreateSubmit(event) {
 
   addNote({ title, body });
   createFieldErrors = {};
-  form.reset();
+  createDraft = { title: "", body: "" };
+  createPreview = false;
+  render();
   announce("Note saved");
   const status = host.querySelector("#form-status");
   if (status) status.textContent = "Note saved.";

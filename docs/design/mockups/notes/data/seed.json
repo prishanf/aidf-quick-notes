@@ -2,15 +2,15 @@
   "notes": [
     {
       "id": "note_032",
-      "title": "Local-only auth",
-      "body": "Fixture body for local-only auth.",
+      "title": "Markdown formatting demo",
+      "body": "# Release checklist\n\nMark items **bold** when done and _italic_ when blocked.\n\n- Run `npm test`\n- Update the [changelog](https://example.com/changelog)\n- Tag the release\n\n> Ship on Friday only with sign-off.\n\n```\nnpm run build\n```",
       "created_at": "2026-07-05T09:33:00.000Z",
       "updated_at": "2026-07-05T09:33:00.000Z"
     },
     {
       "id": "note_031",
-      "title": "Smoke after merge",
-      "body": "Fixture body for smoke after merge.",
+      "title": "Raw HTML is escaped",
+      "body": "This body has literal HTML and an unsafe link, both neutralized on render — never executed or made clickable:\n\n<script>alert('unsafe')</script>\n\n<b>not real bold</b>\n\n[click me](javascript:alert(1))",
       "created_at": "2026-07-04T08:30:00.000Z",
       "updated_at": "2026-07-04T08:30:00.000Z"
     },

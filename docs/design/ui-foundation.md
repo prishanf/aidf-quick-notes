@@ -144,6 +144,8 @@ Approved with Feature 1. Feature 2 extends the component inventory only (confirm
 | Loading / skeleton | Initial fetch | — | Feature 1 page | shipped |
 | Inline alert | Server / permission / delete error | error | Feature 1 + 2 | shipped / planned |
 | Toast | Deferred — form status line for Feature 1 | — | — | deferred |
+| Rendered Markdown content | Safe CommonMark subset display of a note body | plain text (unchanged), formatted, raw-HTML-escaped, unsafe-link-neutralized | Feature 4 | planned |
+| Body Write/Preview toggle | Switch a body field between raw textarea and rendered preview | write (default), preview, preview-empty, disabled while saving | Feature 4 | planned |
 
 ## Accessibility baseline
 

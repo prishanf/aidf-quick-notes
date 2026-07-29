@@ -1,6 +1,6 @@
 # Shared design mockup: Quick Notes
 
-One throwaway static prototype for the notes home screen (create, list, edit, delete).
+One throwaway static prototype for the notes home screen (create, list, edit, delete, Markdown rendering).
 
 ## Why this folder exists
 
@@ -31,6 +31,8 @@ notes/
   serve.sh
   README.md
 ```
+
+Loaded via CDN in `notes.html`, mockup-only: `markdown-it` (rendering preview) alongside `@tailwindcss/browser`. Neither ships in the real app as loaded here — the app depends on its own `package.json` entry once Feature 4 builds.
 
 ## Adding a future UI feature
 

@@ -85,3 +85,84 @@ body {
     align-items: center;
   }
 }
+
+/* Rendered Markdown output (Feature 4 — safe CommonMark subset). Raw HTML in
+   the source is escaped upstream by the renderer (html:false); nothing here
+   ever inserts unescaped user content as live DOM. */
+.rendered-md {
+  line-height: 1.55;
+}
+.rendered-md > :first-child {
+  margin-top: 0;
+}
+.rendered-md > :last-child {
+  margin-bottom: 0;
+}
+.rendered-md p {
+  margin: 0.5em 0;
+}
+.rendered-md h1,
+.rendered-md h2,
+.rendered-md h3,
+.rendered-md h4,
+.rendered-md h5,
+.rendered-md h6 {
+  margin: 0.75em 0 0.35em;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+.rendered-md h1 { font-size: var(--text-lg); }
+.rendered-md h2 { font-size: var(--text-base); }
+.rendered-md h3,
+.rendered-md h4,
+.rendered-md h5,
+.rendered-md h6 { font-size: var(--text-sm); }
+.rendered-md strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.rendered-md em {
+  font-style: italic;
+}
+.rendered-md a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.rendered-md a:hover {
+  color: var(--color-primary-hover);
+}
+.rendered-md ul,
+.rendered-md ol {
+  margin: 0.5em 0;
+  padding-left: 1.4em;
+}
+.rendered-md ul { list-style: disc; }
+.rendered-md ol { list-style: decimal; }
+.rendered-md li + li {
+  margin-top: 0.2em;
+}
+.rendered-md blockquote {
+  margin: 0.5em 0;
+  padding: 0.25em 0.9em;
+  border-left: 3px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+}
+.rendered-md code {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+.rendered-md pre {
+  margin: 0.5em 0;
+  padding: 0.6em 0.8em;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+.rendered-md pre code {
+  background: none;
+  padding: 0;
+}
