@@ -16,7 +16,7 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note) via AIDF `spec` when ready
+- Feature 3 (edit a note): spec + design approved; mockup ready for review — awaiting implementation planning gate approval
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection
 
 ## Recently completed
