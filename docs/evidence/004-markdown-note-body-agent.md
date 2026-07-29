@@ -1,21 +1,21 @@
 ---
 type: evidence
 runner: agent
-commit: b45490f
+commit: cfc5604
 change: feat/004-markdown-note-body
 recorded: 2026-07-28
-ci_corroboration: https://github.com/prishanf/aidf-quick-notes/actions/runs/30428846804
+ci_corroboration: https://github.com/prishanf/aidf-quick-notes/actions/runs/30429231533
 ---
 
 # Agent-run verification (claimed — CI corroborated on PR #4)
 
-`gates` job on PR #4 concluded success (run 30428846804); `project-checks` also passed (run 30428846797); `specialist-review` correctly skipped (no Track C tag).
+`gates` job on PR #4 concluded success on the remediated tip (run 30429231533, after AI review's P1 was fixed); `project-checks` also passed; `specialist-review` correctly skipped (no Track C tag). Initial tip (`b45490f`) also passed `gates` (run 30428846804) before the review round.
 
-Commands executed locally by the build agent on the tip of `feat/004-markdown-note-body` (`b45490f`).
+Commands executed locally by the build agent on the tip of `feat/004-markdown-note-body` (`cfc5604`).
 
 | Command | Exit |
 |---|---|
-| `npm test` | 0 (3 files, 18 tests: 6 new in `tests/markdown.test.ts`, 12 unchanged in `tests/notes.test.ts`, 1 unchanged in `tests/health.test.ts`) |
+| `npm test` | 0 (3 files, 20 tests: 8 in `tests/markdown.test.ts` — 6 original + 2 added during AI-review remediation for linkify-autolink/`data:` URI coverage — 12 unchanged in `tests/notes.test.ts`, 1 unchanged in `tests/health.test.ts`) |
 | `npm run lint` | 0 |
 | `npm run typecheck` | 0 |
 | `npm run build` | 0 |
@@ -39,4 +39,8 @@ Run in the actual app (`npm run dev`), not just the design mockup:
 
 Not checked by a human yet: cross-browser rendering beyond the one browser used here; screen-reader announcement of the `aria-pressed` toggle state (implemented per the design, not independently verified with an assistive-technology tool).
 
-CI corroboration: `gates` + `project-checks` passed on https://github.com/prishanf/aidf-quick-notes/pull/4 (run 30428846804).
+## AI review
+
+Independent review flagged one P1 (missing regression tests for `linkify`-autolinked bare unsafe-scheme strings and `data:` URI links) — see `docs/reviews/004-markdown-note-body.md`. Fixed in `cfc5604`; ready-for-human comment posted at https://github.com/prishanf/aidf-quick-notes/pull/4#issuecomment-5114170537.
+
+CI corroboration: `gates` + `project-checks` passed on https://github.com/prishanf/aidf-quick-notes/pull/4 (runs 30428846804 and 30429231533).

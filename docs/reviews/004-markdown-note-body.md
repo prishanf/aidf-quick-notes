@@ -1,7 +1,7 @@
 ---
 type: code-review
 track: B
-status: request-changes
+status: ready-for-human
 owner: ai-review
 created: 2026-07-28
 updated: 2026-07-28
@@ -40,7 +40,8 @@ plan: docs/plans/004-markdown-note-body.md
   Current behavior is safe on both counts — but nothing in the committed test suite would catch a regression if a future `markdown-it` upgrade or option change silently altered `linkify`'s scheme whitelist or `validateLink`'s data:-URI handling.
 - Impact: The specific claim this PR uses to justify staying off Track C is currently under-protected by automated tests. Not exploitable today, but a real regression-coverage gap for a security-relevant guarantee.
 - Suggested direction: Add two cases to `tests/markdown.test.ts`: (a) a bare unsafe-scheme string relying on `linkify` autodetection is not rendered as an anchor; (b) a `data:` URI via Markdown link syntax is not rendered as an anchor. Mirror the assertion style already used for the `javascript:` case.
-- Host comment: pending
+- Host comment: https://github.com/prishanf/aidf-quick-notes/pull/4 (review comment)
+- **Fixed:** `cfc5604` — added both cases to `tests/markdown.test.ts`. Re-verified: `npm test` 20/20 (was 18), including a positive-control assertion that a safe `http://` URL still autolinks (guards against an overly broad fix that disables `linkify` entirely). CI `gates` re-ran green on the new tip (run 30429231533).
 
 ## What looks solid
 
@@ -53,19 +54,19 @@ plan: docs/plans/004-markdown-note-body.md
 - Scoped CSS uses only existing tokens (`--color-text`, `--color-text-muted`, `--color-primary`, `--color-border-strong`, `--color-surface-sunken`, `--radius-sm`, `--font-mono`, `--text-*`); no new tokens, no raw hex
 - `markdown-it@14.3.0` (MIT, last published 2026-07-02) introduces no new `npm audit` findings; `@types/markdown-it` correctly added after a real `vue-tsc` failure demonstrated it was needed
 - Changelog documents the accepted compatibility trade-off (existing notes may render differently); no migration is claimed or needed
-- Size: 275 changed lines (excl. lockfile), within the 400-line soft cap
-- CI `gates` + `project-checks` passed (run 30428846804); `specialist-review` correctly skipped (no Track C tag)
+- Size: 275 changed lines at initial review; 288 after the test-coverage fix, still within the 400-line soft cap
+- CI `gates` + `project-checks` passed on both the initial tip (run 30428846804) and the remediated tip (run 30429231533); `specialist-review` correctly skipped (no Track C tag)
 
 ## Decision
 
-`request-changes` — one P1. No P0.
+`ready-for-human` — the one P1 is fixed and re-verified. No P0/P1 remain.
 
 ## Host publication
 
-- PR review: pending
-- Inline comments: pending
-- Ready-for-human comment: `pending` — will post once the P1 is remediated and re-reviewed
+- PR review: https://github.com/prishanf/aidf-quick-notes/pull/4 (comment-type review — GitHub does not allow "Request changes" on one's own PR; used a review comment instead, same effect for this workflow)
+- Inline comments: none
+- Ready-for-human comment: posted — see PR #4
 
 ## Next action
 
-`build` — add the two missing regression-test cases named above, re-run verification, update evidence, then re-review.
+Human review may begin on https://github.com/prishanf/aidf-quick-notes/pull/4. AI review does **not** satisfy human PR approval.
