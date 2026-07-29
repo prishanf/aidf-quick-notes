@@ -6,6 +6,11 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ## [Unreleased]
 
+### Changed
+
+- Design mockups: consolidate create/list/edit/delete into one shared `docs/design/mockups/notes/` package (tokens symlink to the app); retire per-feature scaffold copies that duplicated HTML/CSS/JS.
+
+
 ### Added
 
 - Edit a note: inline row edit on the home page, `PATCH /api/notes/:id` with partial title/body updates, `updatedAt` advanced on save.

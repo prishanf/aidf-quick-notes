@@ -21,9 +21,10 @@ updated: 2026-07-28
 
 | To add a... | Copy the shape of | Notes |
 |---|---|---|
-| API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` / `[id].patch.ts` / `[id].delete.ts` | Validate in route or `server/utils/notes.ts` |
+| API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` / `[id].delete.ts` | Validate in route or `server/utils/notes.ts` |
 | Database query / repository | `server/database/client.ts` + `schema.ts` | Use `useDb()`; run `npm run db:migrate` before the app (app does not auto-migrate) |
 | UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error/inline-edit/confirm-delete |
+| Design mockup | `docs/design/mockups/notes/` | Extend this package; never copy `.aidf/reference/mockup/` into a new sibling slug for the same screen |
 | Test | `tests/notes.test.ts` | Hit real HTTP routes via `$fetch` |
 
 ## Established patterns
@@ -35,6 +36,7 @@ updated: 2026-07-28
 - **Auth:** None for this example — single local user. Authorization tests document that absence rather than inventing fake multi-tenant checks.
 - **Database:** Drizzle + better-sqlite3; versioned migrations only; no app-role auto-migrate in production paths.
 - **CSS:** Tailwind utilities resolving through `app/assets/css/tokens.css` semantic variables.
+- **Design mockups:** One shared package at `docs/design/mockups/notes/` for the notes home screen. AIDF’s default “copy scaffold per feature slug” caused duplicate `tokens`/`shell`/`seed` trees for Features 1–3; this project overrides that default — extend `notes/`, keep `css/tokens.css` as a symlink to `app/assets/css/tokens.css`, and only add a new `mockups/<slug>/` when the change introduces a genuinely new screen. Legacy slug folders are thin redirects.
 
 ## Do not
 
@@ -42,3 +44,4 @@ updated: 2026-07-28
 - Do not edit `.aidf/` — upgrade the framework with the install script.
 - Do not assert check results without a runner; write evidence for CI to corroborate.
 - Do not skip Track C gates for schema changes.
+- Do not copy `.aidf/reference/mockup/` into a new `docs/design/mockups/<feature>/` for another notes-home feature — extend `notes/` instead.

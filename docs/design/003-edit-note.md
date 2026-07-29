@@ -2,7 +2,7 @@
 type: design
 track: C
 required_when: "the change carries the `ui` tag"
-status: approved
+status: pending-review
 owner: prishanf
 updated: 2026-07-28
 spec: docs/specs/003-edit-note.md
@@ -57,11 +57,11 @@ flowchart TD
 
 Static HTML/CSS/JS with fabricated data. **Throwaway — do not reuse markup as the implementation.** Only the token layer is shared with the app.
 
-- Location: `docs/design/mockups/edit-note/`
+- Location: `docs/design/mockups/notes/` (shared; legacy `edit-note/` redirects here)
 - Run it with: `npm run mockup:serve` (serves over HTTP; do not open as a file)
 - Screens/states covered: Notes list with Edit control visible on each row; note in edit mode (inline form); validation error during edit; save in progress; save success; save error; not-found error; plus all list states (success, loading, empty, server error)
 - Fixture volume: 32 notes in `data/seed.json` (same seed as Feature 1)
-- Token layer used: `app/assets/css/tokens.css` (copied to mockup `css/tokens.css`)
+- Token layer used: `app/assets/css/tokens.css` (symlinked as `css/tokens.css` in the shared mockup)
 - Not required, because: n/a
 
 ## Accessibility and compatibility

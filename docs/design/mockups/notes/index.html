@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design mockup — Quick Notes</title>
+    <script src="./js/tailwind-boot.js?v=f3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="./css/mockup.css?v=f3" />
+  </head>
+
+  <body>
+    <div id="shell"></div>
+
+    <main id="content" class="mx-auto max-w-3xl px-4 py-8">
+      <h1 class="text-2xl font-semibold">Quick Notes — shared design mockup</h1>
+      <p class="mt-2 max-w-2xl text-sm text-text-muted">
+        Single throwaway prototype for the notes home screen (create, list, edit, delete).
+        Fabricated data, no backend.
+        <strong class="font-medium text-text">Markup will not be reused</strong>
+        — only the shared token layer crosses into the real app.
+        Future UI features must <strong>extend this folder</strong>, not copy a new scaffold.
+      </p>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">Screens</h2>
+        <ul class="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface">
+          <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3">
+            <a href="./notes.html" class="font-medium text-primary hover:underline">Notes</a>
+            <span class="text-sm text-text-muted">Create form + list + inline edit + delete confirm</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-lg font-semibold">States</h2>
+        <p class="mt-1 text-sm text-text-muted">
+          Every design-gate state is reachable by a click (URL <code class="text-xs">?state=</code>).
+        </p>
+        <div class="mt-3 overflow-x-auto rounded-lg border border-border bg-surface">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-left text-xs tracking-wide text-text-muted uppercase">
+                <th scope="col" class="px-4 py-2.5 font-medium">State</th>
+                <th scope="col" class="px-4 py-2.5 font-medium">Open</th>
+              </tr>
+            </thead>
+            <tbody class="[&_a]:text-primary [&_a:hover]:underline">
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Success (32 notes + Edit &amp; Delete)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Edit in progress</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=edit">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Save in progress</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=saving">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Edit validation error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=validation-error">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Save error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=save-error">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Edit not found (404)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=not-found">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete confirm</td>
+                <td class="px-4 py-2.5"><a href="./notes.html">open, then Delete on a row</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete server error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=delete-error">open, then confirm Delete</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Delete not found (404)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=delete-missing">open, then confirm Delete</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Empty</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=empty">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Loading</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=loading">open</a></td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-2.5">Server error (load)</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=error">open</a></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2.5">Permission error</td>
+                <td class="px-4 py-2.5"><a href="./notes.html?state=forbidden">open</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountShell } from "./js/shell.js?v=f3";
+      mountShell({ screen: "index" });
+    </script>
+  </body>
+</html>

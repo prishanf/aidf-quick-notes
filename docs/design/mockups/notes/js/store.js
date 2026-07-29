@@ -1,4 +1,4 @@
-/* Fixture store for delete-note mockup. Throwaway — do not copy into the app. */
+/* Shared notes mockup fixture store. Throwaway — do not copy into the app. */
 
 export const STATES = [
   "success",
@@ -6,6 +6,11 @@ export const STATES = [
   "empty",
   "error",
   "forbidden",
+  "edit",
+  "saving",
+  "validation-error",
+  "save-error",
+  "not-found",
   "delete-error",
   "delete-missing",
 ];
