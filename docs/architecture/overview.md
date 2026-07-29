@@ -3,7 +3,7 @@ type: architecture
 track: project-setup
 status: current
 owner: prishanf
-updated: 2026-07-28
+updated: 2026-07-29
 ---
 
 # Architecture overview
@@ -29,6 +29,6 @@ Browser → Nuxt UI (app/) → Nitro (server/api/) → Drizzle → SQLite file
 - Data model: `docs/architecture/data-model.md` (created with Feature 1)
 - UI foundation: `docs/design/ui-foundation.md` (created with first `ui` feature)
 - Conventions: `docs/conventions.md`
-- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`
+- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`, `docs/decisions/0003-markdown-safe-subset-no-raw-html.md`
 - Operator wiki: `docs/wiki/local-operator-runbook.md`
-- Release: `docs/releases/v0.1.0.md`
+- Release: `docs/releases/v1.0.0.md` (prior: `docs/releases/v0.1.0.md`)

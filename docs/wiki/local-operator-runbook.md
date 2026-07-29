@@ -4,7 +4,7 @@ track: B
 required_when: "knowledge is reusable beyond this change"
 status: current
 owner: prishanf
-updated: 2026-07-28
+updated: 2026-07-29
 audience: developer
 ---
 
@@ -12,7 +12,7 @@ audience: developer
 
 ## Summary
 
-Run migrations before starting the app. Notes live in one SQLite file. Deletes are permanent.
+Run migrations before starting the app. Notes live in one SQLite file. Deletes are permanent. Note bodies render as Markdown (v1.0.0+) — no operator action needed, no schema or config change.
 
 ## When to use this
 
@@ -47,6 +47,6 @@ Default path if unset: `./data/notes.sqlite`.
 
 - Architecture: `docs/architecture/overview.md`
 - Data model: `docs/architecture/data-model.md`
-- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`
-- Release: `docs/releases/v0.1.0.md`
+- ADRs: `docs/decisions/0001-local-sqlite-no-auth.md`, `docs/decisions/0002-hard-delete-notes.md`, `docs/decisions/0003-markdown-safe-subset-no-raw-html.md`
+- Release: `docs/releases/v1.0.0.md`
 - Migration plan: `docs/migrations/001-create-notes.md`
