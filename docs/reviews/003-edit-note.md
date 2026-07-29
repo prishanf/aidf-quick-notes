@@ -63,6 +63,12 @@ plan: docs/plans/003-edit-note.md
 
 `ready-for-human` — no open P0/P1. AI review does **not** satisfy human PR approval.
 
+## Host publication
+
+- PR review: https://github.com/prishanf/aidf-quick-notes/pull/3#pullrequestreview-4804112031
+- Inline comments: none
+- Ready-for-human comment: posted — https://github.com/prishanf/aidf-quick-notes/pull/3#issuecomment-5113416909
+
 ## Next action
 
 Human review may begin on https://github.com/prishanf/aidf-quick-notes/pull/3
