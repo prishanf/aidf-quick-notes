@@ -9,7 +9,7 @@ Documents are working parts of the system. They are created at different points 
 | Implementation plan | How will this repository change? | B, C | Before coding | Files, dependencies, or approach change |
 | Pull request | What exact change is proposed? | A, B, C | After implementation begins | Review, checks, and scope change |
 | Code review | What defects and risks did AI review find on the PR? | B, C (A: host only) | During `ai_reviewing` | Findings remediated or accepted; ready-for-human posted |
-| Release notes | What shipped and why? | B, C | For a release | Release scope or migration notes change |
+| Release notes | What shipped and why? Which git tag names the cut? | B, C | For a release | Release scope, migration notes, or version tag change |
 | Conventions | How does this codebase do things? | Project setup | First unfamiliar area | Patterns change or drift is found |
 | Architecture | What stable structure exists? | When a boundary changes | When a system boundary matters | The durable design changes |
 | Data model | What does persistent state look like, and what may touch it? | `database` | Before the migration is written | Schema, classification, retention, or access rules change |
@@ -39,7 +39,7 @@ After implementation, ask: **did this change alter a stable boundary, data model
 - If no, link the PR and move on.
 - If yes, update architecture documentation and create an ADR for the decision or trade-off.
 - If users or operators need to learn something, update the wiki.
-- If behavior shipped, include it in release notes.
+- If behavior shipped, include it in release notes and ensure the annotated git tag on the production tip matches the notes `version`.
 
 ## Metadata
 

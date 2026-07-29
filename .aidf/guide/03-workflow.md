@@ -21,7 +21,7 @@ The lifecycle below is the full Track C path. Track B skips the tag-driven artif
 13. **Open PR** — open the pull request to `develop` with linked evidence. The build agent's next action is `review`, not a human handoff.
 14. **AI review** — the review agent inspects the diff, publishes findings on the PR, and — when P0/P1 findings exist — hands remediation to `build`. The loop repeats until blocking findings are fixed or explicitly accepted. The review agent then posts a final PR comment that AI review is complete and human review may begin. AI review never satisfies the human approval gate. See [`commands/review.md`](../commands/review.md).
 15. **Human review** — every PR receives an authorized human approval; remaining findings are resolved or accepted with evidence. Merges to `develop`.
-16. **Release** — when the release scope on `develop` is complete, cut `release/<version>`, harden and sign off in the QA environment, obtain production approval, merge to `main` under protected-branch policy, deploy through CI, observe, back-merge to `develop`, and update durable documents.
+16. **Release** — when the release scope on `develop` is complete, cut `release/<version>`, harden and sign off in the QA environment, obtain production approval, merge to `main` under protected-branch policy, create and push an annotated git tag whose name equals the release notes `version` on that tip, deploy through CI, observe, back-merge to `develop`, and update durable documents.
 
 Classification (step 3) precedes planning deliberately: the plan cannot know which gates apply until the track is fixed. Design (step 5) precedes planning for the same reason applied to UX: a plan built against an unapproved screen is a plan for the wrong feature.
 
@@ -42,7 +42,7 @@ Classification (step 3) precedes planning deliberately: the plan cannot know whi
 | `reviewing` | AI review marked ready for human | Human findings resolved or accepted; authorized approval recorded | Human reviewers |
 | `merged_to_develop` | PR approved | Deployed to the QA environment | Maintainer / CI |
 | `staged` | `release/<version>` cut from `develop` | QA hardening sign-off | Release owner |
-| `released` | Merged to `main` and production-approved | Release notes and state update | Maintainer / CI |
+| `released` | Merged to `main` and production-approved | Release notes, annotated version tag on `main`, and state update | Maintainer / CI |
 
 The `staged` state and a release branch **are** part of the default model — see [standards/branching.md](../standards/branching.md). A project that opts out of `develop` (trunk-based mode) collapses `merged_to_develop`, `staged`, and `released` into a single `released` state after merge to `main`, and records that deviation in its own documentation.
 

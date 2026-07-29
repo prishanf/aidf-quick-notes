@@ -6,6 +6,7 @@ status: draft
 owner: ""
 environment: production
 source-revision: ""
+git_tag: ""
 ---
 
 # Deployment record: <release name>
@@ -13,7 +14,8 @@ source-revision: ""
 ## Target
 
 - Environment: <environment>
-- Source revision: <commit/tag>
+- Source revision: <commit SHA>
+- Git tag: <annotated tag matching release notes `version`, e.g. v0.1.0>
 - Deployment/build ID: <identifier>
 - Change links: <PR, spec, release>
 

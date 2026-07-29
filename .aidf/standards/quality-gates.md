@@ -55,9 +55,12 @@ These run at deployment and are **not** pull-request gates. Applying them per PR
 |---|---|
 | Production approval | Every production deployment |
 | Recovery point captured | Before any schema- or data-mutating release |
+| Annotated version tag on production tip | Every production release (name = release notes `version`) |
 | Post-release health and smoke verification | Every production deployment |
 | Observation window with a named owner | Every production deployment |
 | Deployment record | Every production deployment |
+
+The version tag is an **annotated** git tag on the production tip whose name equals the release notes front-matter `version` (for example `v0.1.0`). Do not move or force-update an existing tag that points elsewhere. See [commands/ship.md](../commands/ship.md) and [branching.md](branching.md).
 
 ## Pull request size budget
 
