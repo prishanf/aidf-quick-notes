@@ -4,7 +4,7 @@
 
 framework:
   name: ai-development-framework
-  version: 5.1.0
+  version: 5.1.1
   project_id: replace-with-project-id
   # Where the vendored framework lives in this repository. One directory,
   # so project folders are not interleaved with framework reference material.

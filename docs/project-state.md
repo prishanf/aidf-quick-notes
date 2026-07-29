@@ -16,18 +16,23 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note) via AIDF `spec` when ready
-- Optional follow-ups: Feature 2 UI QA sign-off; branch protection
+- Feature 3 (edit a note): PR #3 — AI review complete / ready-for-human; human PR approval next
+- Optional follow-ups: Feature 2 UI QA sign-off; branch protection; Cancel-during-save design fidelity (P2)
 
 ## Recently completed
 
+- Feature 3 AI review ready-for-human (`docs/reviews/003-edit-note.md`)
+- Feature 3 UI QA approved (`docs/qa/003-edit-note-ui-signoff.md`)
+- Feature 3 Preview + concurrent-delete Save fix (`371a7ba`)
+- Feature 3 build: `PATCH /api/notes/:id`, inline edit UI, HTTP tests
+- Feature 3 plan / design / mockup approved
 - Production push: `main` and `develop` at `d62b6b1`
 - Ship docs, ADRs, operator wiki for v0.1.0
 - PR #1 and #2 merged to `develop`, then released to `main`
 
 ## Next
 
-- Spec Feature 3 (edit) off `develop`
+- Human PR approval / merge of PR #3 to `develop`
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers

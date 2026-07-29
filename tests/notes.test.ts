@@ -110,4 +110,109 @@ describe('notes API', async () => {
     const response = await fetch('/api/notes/%20', { method: 'DELETE' })
     expect(response.status).toBe(400)
   })
+
+  it('PATCH /api/notes/:id updates title and body and advances updatedAt', async () => {
+    const created = await $fetch<{
+      id: string
+      title: string
+      body: string
+      createdAt: string
+      updatedAt: string
+    }>('/api/notes', {
+      method: 'POST',
+      body: { title: 'Editable', body: 'before' },
+    })
+
+    await new Promise(resolve => setTimeout(resolve, 5))
+
+    const patched = await $fetch<{
+      id: string
+      title: string
+      body: string
+      createdAt: string
+      updatedAt: string
+    }>(`/api/notes/${created.id}`, {
+      method: 'PATCH',
+      body: { title: 'Edited', body: 'after' },
+    })
+
+    expect(patched.id).toBe(created.id)
+    expect(patched.title).toBe('Edited')
+    expect(patched.body).toBe('after')
+    expect(patched.createdAt).toBe(created.createdAt)
+    expect(patched.updatedAt >= created.updatedAt).toBe(true)
+    expect(patched.updatedAt).not.toBe(created.updatedAt)
+
+    const listed = await $fetch<{ notes: Array<{ id: string; title: string; body: string }> }>('/api/notes')
+    const found = listed.notes.find(n => n.id === created.id)
+    expect(found?.title).toBe('Edited')
+    expect(found?.body).toBe('after')
+  })
+
+  it('PATCH /api/notes/:id supports title-only and body-only updates', async () => {
+    const created = await $fetch<{ id: string; title: string; body: string }>('/api/notes', {
+      method: 'POST',
+      body: { title: 'Partial', body: 'keep-me' },
+    })
+
+    const titleOnly = await $fetch<{ title: string; body: string }>(`/api/notes/${created.id}`, {
+      method: 'PATCH',
+      body: { title: 'Title only' },
+    })
+    expect(titleOnly.title).toBe('Title only')
+    expect(titleOnly.body).toBe('keep-me')
+
+    const bodyOnly = await $fetch<{ title: string; body: string }>(`/api/notes/${created.id}`, {
+      method: 'PATCH',
+      body: { body: 'Body only' },
+    })
+    expect(bodyOnly.title).toBe('Title only')
+    expect(bodyOnly.body).toBe('Body only')
+  })
+
+  it('PATCH /api/notes/:id rejects empty patch and invalid fields with 400', async () => {
+    const created = await $fetch<{ id: string }>('/api/notes', {
+      method: 'POST',
+      body: { title: 'Validate me' },
+    })
+
+    await expect(
+      $fetch(`/api/notes/${created.id}`, {
+        method: 'PATCH',
+        body: {},
+      }),
+    ).rejects.toMatchObject({ statusCode: 400 })
+
+    await expect(
+      $fetch(`/api/notes/${created.id}`, {
+        method: 'PATCH',
+        body: { title: '   ' },
+      }),
+    ).rejects.toMatchObject({ statusCode: 400 })
+
+    await expect(
+      $fetch(`/api/notes/${created.id}`, {
+        method: 'PATCH',
+        body: { body: 'x'.repeat(5001) },
+      }),
+    ).rejects.toMatchObject({ statusCode: 400 })
+  })
+
+  it('PATCH /api/notes/:id returns 404 for an unknown id', async () => {
+    await expect(
+      $fetch('/api/notes/00000000-0000-4000-8000-000000000000', {
+        method: 'PATCH',
+        body: { title: 'Nope' },
+      }),
+    ).rejects.toMatchObject({ statusCode: 404 })
+  })
+
+  it('PATCH /api/notes/:id rejects a blank id with 400', async () => {
+    const response = await fetch('/api/notes/%20', {
+      method: 'PATCH',
+      body: JSON.stringify({ title: 'Nope' }),
+      headers: { 'content-type': 'application/json' },
+    })
+    expect(response.status).toBe(400)
+  })
 })

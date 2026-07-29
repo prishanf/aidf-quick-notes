@@ -56,11 +56,11 @@ flowchart TD
 
 Static HTML/CSS/JS with fabricated data. **Throwaway — do not reuse markup as the implementation.** Only the token layer is shared with the app.
 
-- Location: `docs/design/mockups/delete-note/`
+- Location: `docs/design/mockups/notes/` (shared; legacy `delete-note/` redirects here)
 - Run it with: `npm run mockup:serve` (serves over HTTP; do not open as a file)
 - Screens/states covered: Notes screen; success, confirm, deleting, delete-error, delete-missing, empty, loading, server error, permission error, validation error
 - Fixture volume: 32 notes in `data/seed.json`
-- Token layer used: `app/assets/css/tokens.css` (copied to mockup `css/tokens.css`)
+- Token layer used: `app/assets/css/tokens.css` (symlinked as `css/tokens.css` in the shared mockup)
 - Not required, because: n/a
 
 ## Accessibility and compatibility

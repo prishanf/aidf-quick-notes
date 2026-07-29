@@ -1,4 +1,4 @@
-/* Fixture store for delete-note mockup. Throwaway — do not copy into the app. */
+/* Shared notes mockup fixture store. Throwaway — do not copy into the app. */
 
 export const STATES = [
   "success",
@@ -6,6 +6,11 @@ export const STATES = [
   "empty",
   "error",
   "forbidden",
+  "edit",
+  "saving",
+  "validation-error",
+  "save-error",
+  "not-found",
   "delete-error",
   "delete-missing",
 ];
@@ -116,6 +121,41 @@ export async function deleteNote(id) {
     err.message = "That note was not found. It may already have been deleted.";
     throw err;
   }
+  emit();
+}
+
+/**
+ * Simulated PATCH. Returns a promise that resolves on success or rejects with
+ * { code: 400 | 404 | 500, message } so the UI can show validation / not-found / save-error.
+ */
+export async function updateNote(id, { title, body }) {
+  const state = requestedState();
+  await sleep(LATENCY_MS);
+
+  if (state === "not-found") {
+    const err = new Error("fixture-not-found");
+    err.code = 404;
+    err.message = "Note not found. It may have been deleted.";
+    throw err;
+  }
+  if (state === "save-error") {
+    const err = new Error("fixture-save-error");
+    err.code = 500;
+    err.message = "Could not save the note. Try again.";
+    throw err;
+  }
+
+  const note = data.notes.find((n) => n.id === id);
+  if (!note) {
+    const err = new Error("fixture-not-found");
+    err.code = 404;
+    err.message = "Note not found. It may have been deleted.";
+    throw err;
+  }
+
+  note.title = title;
+  note.body = body || "";
+  note.updated_at = new Date().toISOString();
   emit();
 }
 

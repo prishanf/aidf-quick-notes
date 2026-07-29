@@ -7,7 +7,7 @@ Minimal Nuxt + SQLite example used to exercise the [AI Development Framework](ht
 - Nuxt 4 + Tailwind
 - SQLite via Drizzle ORM + better-sqlite3
 - Vitest + `@nuxt/test-utils` for HTTP coverage
-- AIDF 5.1.0 vendored in `.aidf/`
+- AIDF 5.1.1 vendored in `.aidf/`
 
 ## Planned features (Track C each)
 

@@ -78,13 +78,13 @@ It does not need: a backend, real data, accessibility implementation (though vis
 
 ## Mockup structure and how it runs
 
-A single 900-line `index.html` with inlined styles and data cannot be reviewed screen by screen, cannot share a stylesheet with the second screen, and cannot show a realistic data volume without becoming unreadable. So the mockup has a required shape, and `reference/mockup/` ships a working scaffold to copy rather than reinvent:
+A single 900-line `index.html` with inlined styles and data cannot be reviewed screen by screen, cannot share a stylesheet with the second screen, and cannot show a realistic data volume without becoming unreadable. So the mockup has a required shape, and `reference/mockup/` ships a working scaffold to copy rather than reinvent — **once per product surface**, not once per feature.
 
 ```text
-<documents.designs>/mockups/<slug>/
+<documents.designs>/mockups/<surface-slug>/
   index.html            # entry: links to every screen and state
   <screen>.html         # one file per screen
-  css/tokens.css        # the project's token layer -- copied or symlinked from ui.tokens, NOT rewritten
+  css/tokens.css        # the project's token layer -- symlink (preferred) or copy from ui.tokens, NOT rewritten
   css/mockup.css        # prototype-only styling; nothing here ships
   data/*.json           # fabricated fixtures at realistic volume
   js/store.js           # loads fixtures, holds mutations in memory, resets
@@ -93,10 +93,13 @@ A single 900-line `index.html` with inlined styles and data cannot be reviewed s
   README.md             # how to run it, and what the reviewer should exercise
 ```
 
+`<surface-slug>` names the product surface (for example `notes` or `settings`), not each successive feature ticket. The first `ui` change that needs a mockup for that surface copies the scaffold. Later features that extend the same screen **update that package** — add states, controls, and README entries — instead of creating `mockups/<feature-2>/`, `mockups/<feature-3>/`, … with duplicated tokens, shell, and seed data. Create a new sibling package only when the change introduces a genuinely new screen that cannot live in an existing package.
+
 Required properties:
 
 - **It runs as a local static server, not from `file://`.** A mockup that reads its fixtures with `fetch('./data/seed.json')` fails silently under `file://` because of the browser's origin rules — the reviewer sees an empty page and reports that the prototype is broken. `serve.sh` (and a matching `commands.mockup_serve` entry in the manifest) exists so the answer to "how do I look at this?" is one command, not a paragraph.
-- **Shared `css/` and `data/` directories.** Every screen loads the same token layer and the same fixtures, so a colour or a fixture changes in one place and the screens stay consistent with each other. Per-screen copies of either drift within a single review cycle.
+- **Shared `css/` and `data/` directories.** Every screen loads the same token layer and the same fixtures, so a colour or a fixture changes in one place and the screens stay consistent with each other. Per-screen copies of either drift within a single review cycle. Prefer a **symlink** from `css/tokens.css` to the path named as `ui.tokens` so the mockup cannot drift from the application palette.
+- **One package per surface.** Do not re-copy `reference/mockup/` for each feature that touches the same screen; that produces duplicate trees agents and reviewers cannot keep aligned.
 - **Tailwind, the same way the app uses it.** Either the browser build (`@tailwindcss/browser`) or a prebuilt stylesheet committed into `css/` — with `css/tokens.css` supplying the theme in both cases. What must not happen is the mockup inventing its own palette in hand-written CSS while the app uses Tailwind: that is two design systems, and the approval covers the wrong one.
 - **Fixtures in `data/`, never inlined in the markup.** Realistic volume is the whole point of the fixture — thirty rows reveal the layout problems that three rows hide — and inlined data cannot be shared, edited, or reset.
 - **A visible reset.** Prototype mutations live in memory; the reviewer needs one control that restores the fixture so a scenario can be re-run.
