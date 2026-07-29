@@ -1,8 +1,8 @@
-# AIDF 5.1.0 (vendored)
+# AIDF 5.1.1 (vendored)
 
 **Do not edit anything in this directory.** It is a verbatim copy of the
 [AI Development Framework](https://github.com/prishanf/ai-development-framework)
-at version `5.1.0`, installed by `aidf-install.sh`. Local edits are silently
+at version `5.1.1`, installed by `aidf-install.sh`. Local edits are silently
 discarded on the next upgrade.
 
 ## The split this directory exists to make
@@ -43,5 +43,5 @@ framework's CHANGELOG for what changed before you do it, then re-run the gates.
 
 ## Version
 
-`5.1.0` -- also recorded as `framework.version` in `project.yaml`. If the two
+`5.1.1` -- also recorded as `framework.version` in `project.yaml`. If the two
 disagree, the gates will say so.

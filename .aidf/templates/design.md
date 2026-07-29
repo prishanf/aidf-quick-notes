@@ -46,8 +46,8 @@ A static HTML/CSS/JS artifact, built with mock data, that a human can actually c
 
 This is **not** the Preview environment. It is throwaway, built before planning, and gates the plan approval below — not the PR.
 
-- Location: `<path, e.g. docs/design/mockups/<slug>/index.html>`
-- Run it with: `<command, e.g. sh docs/design/mockups/<slug>/serve.sh>` — it must be served over HTTP, not opened as a file
+- Location: `<path, e.g. docs/design/mockups/<surface-slug>/ — extend an existing package for the same screen; do not copy a new sibling per feature>`
+- Run it with: `<command, e.g. npm run mockup:serve or sh docs/design/mockups/<surface-slug>/serve.sh>` — it must be served over HTTP, not opened as a file
 - Screens/states covered: <list, or "all states above">
 - Fixture volume: <e.g. "32 records across 5 categories" — realistic, not three placeholder rows>
 - Token layer used: `<path>` — the same file the application reads

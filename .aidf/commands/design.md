@@ -33,7 +33,18 @@ Do not introduce a colour, type size, or spacing value outside its scales, and d
 write a second foundation document.
 
 Then build the mockup, following the required structure in
-standards/ui-and-preview.md — copy reference/mockup/ rather than inventing a layout.
+standards/ui-and-preview.md. Prefer extending an existing mockup package for the
+same product screen over copying the scaffold again:
+
+- If `<documents.designs>/mockups/` already has a package that covers the same
+  screen or surface this feature extends, UPDATE that package: add states,
+  controls, and README entries. Do not create a sibling `<feature-slug>/` that
+  re-copies tokens, shell, seed data, and shared chrome.
+- Only when this is the project's first mockup for a given surface — or the
+  change introduces a genuinely new screen that cannot live in an existing
+  package — copy `reference/mockup/` into `<documents.designs>/mockups/<slug>/`
+  and wire `css/tokens.css` as a symlink (preferred) or copy of `ui.tokens`.
+
 It must:
 - be static HTML/CSS/JS with one file per screen, plus shared css/ and data/
   directories, so screens cannot drift from each other;
@@ -75,5 +86,6 @@ open questions, and the explicit statement that plan must wait for this approval
 - The mockup loads the project's token layer and uses Tailwind as the application does — no separate palette.
 - On the project's first `ui` change, `templates/ui-foundation.md` exists, with measured contrast ratios, and is submitted for approval with the design.
 - On a later `ui` change, the existing foundation was read and extended rather than duplicated or contradicted.
+- On a later `ui` change that extends an already-mocked screen, the existing mockup package was extended rather than a new sibling scaffold being copied.
 - The handoff states plainly that the mockup is throwaway and must not become the implementation.
 - `Approval.decision` is left `pending`, with an explicit statement that build and plan must wait for it.

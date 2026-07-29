@@ -16,18 +16,27 @@ Then open <http://127.0.0.1:5500/>. Add a port to change it: `sh serve.sh 4400`.
 
 ## Copy it into a project
 
+**First mockup for a product surface** (or a genuinely new screen):
+
 ```bash
-cp -r reference/mockup <documents.designs>/mockups/<feature-slug>
-cp <ui.tokens> <documents.designs>/mockups/<feature-slug>/css/tokens.css
+cp -r reference/mockup <documents.designs>/mockups/<surface-slug>
+# Prefer a symlink so the mockup cannot drift from the app palette:
+ln -sf "$(pwd)/<ui.tokens>" <documents.designs>/mockups/<surface-slug>/css/tokens.css
+# Or copy once if your host cannot use symlinks:
+# cp <ui.tokens> <documents.designs>/mockups/<surface-slug>/css/tokens.css
 ```
 
-Then, in order:
+Name `<surface-slug>` after the product surface (for example `notes`), not the feature ticket.
 
-1. Replace `css/tokens.css` with the project's real token layer — the file named as `ui.tokens` in `project.yaml`. Do not edit the values in the copy; if a token is missing, add it to the application's file and re-copy. A forked palette means the design approval covers colours the product does not have.
-2. Replace `data/seed.json` with fixtures for this feature, at **realistic volume**. Thirty rows expose the layout problems three rows hide; that is the whole reason the mockup exists.
+**Later features on the same screen:** do **not** run another `cp -r`. Extend the existing package — add states to the store, controls to the screen JS, links on `index.html`, and README entries. Re-copying the scaffold per feature duplicates `tokens` / `shell` / `seed` and is how projects accumulate three nearly identical mockup trees.
+
+Then, in order (first package only, or when adding a new surface):
+
+1. Ensure `css/tokens.css` is the project's real token layer — the file named as `ui.tokens` in `project.yaml`. Do not edit values in a forked copy; if a token is missing, add it to the application's file. A forked palette means the design approval covers colours the product does not have.
+2. Replace `data/seed.json` with fixtures for this surface, at **realistic volume**. Thirty rows expose the layout problems three rows hide; that is the whole reason the mockup exists.
 3. Rename and rewrite the screens to match the design doc — one file per screen.
 4. Rewrite `index.html`'s "What to exercise" list with the questions this design gate is actually asking.
-5. Add `commands.mockup_serve` to `project.yaml` so the handoff can name one command.
+5. Add `commands.mockup_serve` to `project.yaml` so the handoff can name one command (point it at the shared surface package, not a per-feature folder).
 
 ## What is here
 

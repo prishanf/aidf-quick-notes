@@ -1,6 +1,6 @@
 # Agent instructions
 
-This project follows the [AI Development Framework](.aidf/README.md) v5.1.0.
+This project follows the [AI Development Framework](.aidf/README.md) v5.1.1.
 
 ## Before acting
 

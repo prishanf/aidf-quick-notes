@@ -8,6 +8,7 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ### Changed
 
+- Upgrade vendored AIDF to 5.1.1 (design agents extend shared mockup packages instead of copying per feature).
 - Design mockups: consolidate create/list/edit/delete into one shared `docs/design/mockups/notes/` package (tokens symlink to the app); retire per-feature scaffold copies that duplicated HTML/CSS/JS.
 
 
