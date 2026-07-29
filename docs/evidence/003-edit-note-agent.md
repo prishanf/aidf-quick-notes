@@ -1,7 +1,7 @@
 ---
 type: evidence
 runner: agent
-commit: pending
+commit: 1e911c3
 change: feat/003-edit-note
 recorded: 2026-07-28
 ci_corroboration: pending
@@ -18,7 +18,6 @@ Commands executed locally by the build agent on `feat/003-edit-note`. Results be
 | `npm run typecheck` | 0 |
 | `npm run build` | 0 |
 | `sh .aidf/reference/scripts/check-api-coverage.sh --manifest ./project.yaml` | 0 (5/5 covered) |
-| `sh .aidf/reference/scripts/check-changelog.sh --track B --manifest ./project.yaml` | pending until CHANGELOG commit; expected 0 after commit |
-| `sh .aidf/reference/scripts/run-gates.sh --track B --tags ui,api --manifest ./project.yaml` | changelog failed pre-commit (uncommitted CHANGELOG); other gates passed |
+| `sh .aidf/reference/scripts/check-changelog.sh --track B --manifest ./project.yaml` | 0 |
 
 Next: CI on the PR must corroborate these checks.
