@@ -23,9 +23,11 @@ updated: 2026-07-28
 |---|---|---|
 | API endpoint | `server/api/notes/index.get.ts` / `index.post.ts` / `[id].delete.ts` | Validate in route or `server/utils/notes.ts` |
 | Database query / repository | `server/database/client.ts` + `schema.ts` | Use `useDb()`; run `npm run db:migrate` before the app (app does not auto-migrate) |
-| UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error/inline-edit/confirm-delete |
+| UI page | `app/pages/index.vue` | Token utilities only; states: empty/loading/error/inline-edit/confirm-delete/body-write-preview |
+| Note body rendering | `app/utils/markdown.ts` | `renderMarkdown(body)` — safe CommonMark subset, `html:false`; never render `title` through it |
 | Design mockup | `docs/design/mockups/notes/` | Extend this package; never copy `.aidf/reference/mockup/` into a new sibling slug for the same screen |
 | Test | `tests/notes.test.ts` | Hit real HTTP routes via `$fetch` |
+| Unit test (non-HTTP) | `tests/markdown.test.ts` | Import the module directly (relative path); no `@nuxt/test-utils` setup needed for pure functions |
 
 ## Established patterns
 
@@ -40,7 +42,8 @@ updated: 2026-07-28
 
 ## Do not
 
-- Do not add authentication, sharing, Markdown, or folders without a new approved spec.
+- Do not add authentication, sharing, images/GFM extensions, or folders without a new approved spec.
+- Do not enable raw HTML passthrough (`html: true`) in `app/utils/markdown.ts` or render `title` through it — that reopens the XSS trust boundary Feature 4 was deliberately kept off Track C by closing; see `docs/specs/004-markdown-note-body.md`.
 - Do not edit `.aidf/` — upgrade the framework with the install script.
 - Do not assert check results without a runner; write evidence for CI to corroborate.
 - Do not skip Track C gates for schema changes.
