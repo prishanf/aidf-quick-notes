@@ -138,15 +138,15 @@ Update of existing `notes` columns only — **no** `database` tag, **no** migrat
 
 ## Completion checklist
 
-- [ ] Scope matches approved spec (inline edit + partial PATCH; no migration).
-- [ ] Tests added/updated in `tests/notes.test.ts` (200 partial paths, 400, 404, invalid id).
-- [ ] Verification commands recorded.
-- [ ] Documentation: API contract + changelog (+ conventions + data-model light touch).
+- [x] Scope matches approved spec (inline edit + partial PATCH; no migration).
+- [x] Tests added/updated in `tests/notes.test.ts` (200 partial paths, 400, 404, invalid id).
+- [x] Verification commands recorded.
+- [x] Documentation: API contract + changelog (+ conventions + data-model light touch).
 - [ ] PR evidence prepared (agent-claimed; CI to corroborate).
-- [ ] `database` tag: n/a — none applied; no migration.
-- [ ] `api` tag: HTTP tests for `PATCH /api/notes/:id`.
-- [ ] `ui` tag: implements approved design/mockup states; tokens already precede components.
-- [ ] Size budget respected or justified against soft cap.
+- [x] `database` tag: n/a — none applied; no migration.
+- [x] `api` tag: HTTP tests for `PATCH /api/notes/:id`.
+- [x] `ui` tag: implements approved design/mockup states; tokens already precede components.
+- [x] Size budget respected or justified against soft cap.
 
 ## Approval
 

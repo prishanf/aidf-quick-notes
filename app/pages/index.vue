@@ -22,6 +22,14 @@ const pendingDeleteId = ref<string | null>(null)
 const deleting = ref(false)
 const deleteError = ref('')
 
+const editingId = ref<string | null>(null)
+const editTitle = ref('')
+const editBody = ref('')
+const editTitleError = ref('')
+const editBodyError = ref('')
+const editError = ref('')
+const savingEdit = ref(false)
+
 const pendingNote = computed(() =>
   pendingDeleteId.value
     ? notes.value.find(n => n.id === pendingDeleteId.value) ?? null
@@ -89,7 +97,9 @@ async function onSubmit() {
 }
 
 function openDeleteConfirm(id: string) {
+  if (editingId.value) cancelEdit()
   deleteError.value = ''
+  editError.value = ''
   pendingDeleteId.value = id
   deleting.value = false
 }
@@ -134,6 +144,111 @@ async function confirmDelete() {
   }
 }
 
+function openEdit(note: Note) {
+  if (pendingDeleteId.value) return
+  editError.value = ''
+  deleteError.value = ''
+  editingId.value = note.id
+  editTitle.value = note.title
+  editBody.value = note.body
+  editTitleError.value = ''
+  editBodyError.value = ''
+  nextTick(() => {
+    document.getElementById(`edit-title-${note.id}`)?.focus()
+  })
+}
+
+function cancelEdit() {
+  if (savingEdit.value) return
+  editingId.value = null
+  editTitle.value = ''
+  editBody.value = ''
+  editTitleError.value = ''
+  editBodyError.value = ''
+}
+
+async function saveEdit() {
+  const id = editingId.value
+  if (!id || savingEdit.value) return
+
+  editTitleError.value = ''
+  editBodyError.value = ''
+  editError.value = ''
+
+  const trimmed = editTitle.value.trim()
+  if (!trimmed || trimmed.length > 120) {
+    editTitleError.value = 'Enter a title between 1 and 120 characters.'
+    return
+  }
+  if (editBody.value.length > 5000) {
+    editBodyError.value = 'Body must be 5000 characters or fewer.'
+    return
+  }
+
+  const existing = notes.value.find(n => n.id === id)
+  if (!existing) {
+    editError.value = 'That note was not found. It may already have been deleted.'
+    editingId.value = null
+    return
+  }
+
+  const patch: { title?: string; body?: string } = {}
+  if (trimmed !== existing.title) patch.title = trimmed
+  if (editBody.value !== existing.body) patch.body = editBody.value
+
+  if (!patch.title && patch.body === undefined) {
+    cancelEdit()
+    return
+  }
+
+  savingEdit.value = true
+  try {
+    const updated = await $fetch<Note>(`/api/notes/${id}`, {
+      method: 'PATCH',
+      body: patch,
+    })
+    notes.value = notes.value.map(n => (n.id === id ? updated : n))
+    editingId.value = null
+    editTitle.value = ''
+    editBody.value = ''
+    formStatus.value = 'Note updated.'
+  }
+  catch (error: unknown) {
+    const err = error as {
+      statusCode?: number
+      data?: { statusMessage?: string; statusCode?: number }
+      statusMessage?: string
+    }
+    const status = err?.data?.statusCode ?? err?.statusCode
+    const message = err?.data?.statusMessage
+      || err?.statusMessage
+      || (status === 404
+        ? 'That note was not found. It may already have been deleted.'
+        : 'Could not save the note. Nothing was changed. Try again.')
+
+    if (status === 404) {
+      editError.value = message
+      notes.value = notes.value.filter(n => n.id !== id)
+      editingId.value = null
+      return
+    }
+
+    if (status === 400 && message.toLowerCase().includes('title')) {
+      editTitleError.value = message
+      return
+    }
+    if (status === 400 && message.toLowerCase().includes('body')) {
+      editBodyError.value = message
+      return
+    }
+
+    editError.value = message
+  }
+  finally {
+    savingEdit.value = false
+  }
+}
+
 onMounted(() => {
   loadNotes()
 })
@@ -146,11 +261,16 @@ watch(pendingNote, (note) => {
 })
 
 function onDocumentKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') cancelDelete()
+  if (event.key !== 'Escape') return
+  if (pendingDeleteId.value) {
+    cancelDelete()
+    return
+  }
+  if (editingId.value) cancelEdit()
 }
 
-watch(pendingDeleteId, (id, _, onCleanup) => {
-  if (!id) return
+watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
+  if (!deleteId && !editId) return
   document.addEventListener('keydown', onDocumentKeydown)
   onCleanup(() => document.removeEventListener('keydown', onDocumentKeydown))
 })
@@ -167,7 +287,7 @@ watch(pendingDeleteId, (id, _, onCleanup) => {
           Your notes
         </h1>
         <p class="mt-2 text-sm text-text-muted">
-          Add a short note, then find it in the list newest first. Delete removes it for good.
+          Add a short note, then find it in the list newest first. Edit notes to fix typos or update content. Delete removes permanently.
         </p>
       </header>
 
@@ -274,6 +394,26 @@ watch(pendingDeleteId, (id, _, onCleanup) => {
         </div>
 
         <div
+          v-if="editError"
+          class="mt-3 rounded-lg border border-border bg-surface p-4"
+          role="alert"
+        >
+          <p class="font-semibold text-text">
+            Could not update
+          </p>
+          <p class="mt-1 text-sm text-text-muted">
+            {{ editError }}
+          </p>
+          <button
+            type="button"
+            class="mt-3 rounded-md border border-border-strong px-3 py-1.5 text-sm hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            @click="editError = ''"
+          >
+            Dismiss
+          </button>
+        </div>
+
+        <div
           v-if="deleteError"
           class="mt-3 rounded-lg border border-border bg-surface p-4"
           role="alert"
@@ -348,7 +488,84 @@ watch(pendingDeleteId, (id, _, onCleanup) => {
             :key="note.id"
             class="px-4 py-3"
           >
-            <article class="flex items-start justify-between gap-3">
+            <form
+              v-if="editingId === note.id"
+              class="space-y-3"
+              novalidate
+              @submit.prevent="saveEdit"
+            >
+              <div>
+                <label
+                  :for="`edit-title-${note.id}`"
+                  class="block text-sm font-medium"
+                >Title</label>
+                <input
+                  :id="`edit-title-${note.id}`"
+                  v-model="editTitle"
+                  type="text"
+                  maxlength="120"
+                  required
+                  :aria-invalid="editTitleError ? 'true' : 'false'"
+                  :aria-describedby="editTitleError ? `edit-title-error-${note.id}` : undefined"
+                  class="mt-1 w-full rounded-md border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :class="editTitleError ? 'border-danger' : 'border-border'"
+                >
+                <p
+                  v-if="editTitleError"
+                  :id="`edit-title-error-${note.id}`"
+                  class="mt-1 text-sm text-danger"
+                  role="alert"
+                >
+                  {{ editTitleError }}
+                </p>
+              </div>
+              <div>
+                <label
+                  :for="`edit-body-${note.id}`"
+                  class="block text-sm font-medium"
+                >Body</label>
+                <textarea
+                  :id="`edit-body-${note.id}`"
+                  v-model="editBody"
+                  rows="3"
+                  maxlength="5000"
+                  :aria-invalid="editBodyError ? 'true' : 'false'"
+                  :aria-describedby="editBodyError ? `edit-body-error-${note.id}` : undefined"
+                  class="mt-1 w-full rounded-md border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :class="editBodyError ? 'border-danger' : 'border-border'"
+                />
+                <p
+                  v-if="editBodyError"
+                  :id="`edit-body-error-${note.id}`"
+                  class="mt-1 text-sm text-danger"
+                  role="alert"
+                >
+                  {{ editBodyError }}
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  type="submit"
+                  class="rounded-md bg-primary px-3.5 py-2 text-sm font-medium text-primary-fg hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60"
+                  :disabled="savingEdit"
+                >
+                  {{ savingEdit ? 'Saving…' : 'Save' }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-md border border-border-strong px-3.5 py-2 text-sm hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60"
+                  :disabled="savingEdit"
+                  @click="cancelEdit"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+
+            <article
+              v-else
+              class="flex items-start justify-between gap-3"
+            >
               <div class="min-w-0 flex-1">
                 <h3 class="font-semibold text-text">
                   {{ note.title }}
@@ -360,17 +577,27 @@ watch(pendingDeleteId, (id, _, onCleanup) => {
                   <span v-else>—</span>
                 </p>
                 <p class="mt-2 text-xs text-text-muted">
-                  <time :datetime="note.createdAt">{{ formatDateTime(note.createdAt) }}</time>
+                  <time :datetime="note.updatedAt">{{ formatDateTime(note.updatedAt) }}</time>
                 </p>
               </div>
-              <button
-                type="button"
-                class="shrink-0 rounded-md border border-border px-2.5 py-1.5 text-sm text-danger hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-                :aria-label="`Delete note ${note.title}`"
-                @click="openDeleteConfirm(note.id)"
-              >
-                Delete
-              </button>
+              <div class="flex shrink-0 flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  class="rounded-md border border-border px-2.5 py-1.5 text-sm text-text hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :aria-label="`Edit note ${note.title}`"
+                  @click="openEdit(note)"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="rounded-md border border-border px-2.5 py-1.5 text-sm text-danger hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :aria-label="`Delete note ${note.title}`"
+                  @click="openDeleteConfirm(note.id)"
+                >
+                  Delete
+                </button>
+              </div>
             </article>
           </li>
         </ul>

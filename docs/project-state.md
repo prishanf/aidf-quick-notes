@@ -16,19 +16,21 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note): spec + design/mockup approved; implementation plan pending approval — `docs/plans/003-edit-note.md`
+- Feature 3 (edit a note): implemented on `feat/003-edit-note` — open PR, then `review`
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection
 
 ## Recently completed
 
-- Feature 3 design + mockup approved (inline edit, partial PATCH)
+- Feature 3 build: `PATCH /api/notes/:id`, inline edit UI, HTTP tests
+- Feature 3 plan approved (inline edit + partial PATCH)
+- Feature 3 design + mockup approved
 - Production push: `main` and `develop` at `d62b6b1`
 - Ship docs, ADRs, operator wiki for v0.1.0
 - PR #1 and #2 merged to `develop`, then released to `main`
 
 ## Next
 
-- Approve Feature 3 plan, then branch `feat/003-edit-note` and build
+- Open Feature 3 PR to `develop`, run `review`
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers

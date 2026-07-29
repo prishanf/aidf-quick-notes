@@ -6,6 +6,10 @@ is optional. See `.aidf/standards/quality-gates.md`.
 
 ## [Unreleased]
 
+### Added
+
+- Edit a note: inline row edit on the home page, `PATCH /api/notes/:id` with partial title/body updates, `updatedAt` advanced on save.
+
 ## [0.1.0] - 2026-07-28
 
 Release notes: `docs/releases/v0.1.0.md`.

@@ -57,7 +57,7 @@ Single entity. No relationships in Feature 1.
 | `title` | text | no | — | CHECK length 1–120 (app + DB if practical) | internal | Required display title |
 | `body` | text | no | `''` | max 5000 chars (app) | internal | Optional body; empty string when absent |
 | `created_at` | text (ISO-8601) | no | insert time | — | internal | Set on insert; never updated |
-| `updated_at` | text (ISO-8601) | no | insert time | — | internal | Set on insert; Feature 1 does not update rows |
+| `updated_at` | text (ISO-8601) | no | insert time | — | internal | Set on insert; advanced on Feature 3 edit (`PATCH`) |
 
 **Indexes**
 
@@ -101,7 +101,7 @@ Single entity. No relationships in Feature 1.
 
 | Role | Table | Read scope | Write scope | Enforced at |
 |---|---|---|---|---|
-| anonymous local caller | `notes` | all rows | create + hard delete (Features 1–2) | none — intentional for this example (ADR 0001) |
+| anonymous local caller | `notes` | all rows | create + update + hard delete (Features 1–3) | none — intentional for this example (ADR 0001) |
 
 Denied-path authorization tests are **not applicable** until auth exists. HTTP tests still cover validation failures (400).
 
