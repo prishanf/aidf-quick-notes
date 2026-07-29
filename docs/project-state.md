@@ -16,11 +16,12 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note): implemented on `feat/003-edit-note` — open PR, then `review`
+- Feature 3 (edit a note): PR #3 open; Preview ready at http://127.0.0.1:3001/ — UI QA sign-off pending
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection
 
 ## Recently completed
 
+- Feature 3 Preview isolated on `feat/003-edit-note` @ `d17b003` (`docs/qa/003-edit-note-ui-signoff.md`)
 - Feature 3 build: `PATCH /api/notes/:id`, inline edit UI, HTTP tests
 - Feature 3 plan approved (inline edit + partial PATCH)
 - Feature 3 design + mockup approved
@@ -30,7 +31,7 @@ manifest: project.yaml
 
 ## Next
 
-- Open Feature 3 PR to `develop`, run `review`
+- Human UI QA sign-off for Feature 3; run `review` on PR #3
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers

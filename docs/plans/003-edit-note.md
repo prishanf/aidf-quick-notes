@@ -142,7 +142,7 @@ Update of existing `notes` columns only — **no** `database` tag, **no** migrat
 - [x] Tests added/updated in `tests/notes.test.ts` (200 partial paths, 400, 404, invalid id).
 - [x] Verification commands recorded.
 - [x] Documentation: API contract + changelog (+ conventions + data-model light touch).
-- [ ] PR evidence prepared (agent-claimed; CI to corroborate).
+- [x] PR evidence prepared (agent-claimed; CI to corroborate).
 - [x] `database` tag: n/a — none applied; no migration.
 - [x] `api` tag: HTTP tests for `PATCH /api/notes/:id`.
 - [x] `ui` tag: implements approved design/mockup states; tokens already precede components.
