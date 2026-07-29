@@ -13,12 +13,12 @@ They exist because AIDF v1 described quality gates without implementing a single
 | `scripts/validate-evidence.sh` | Enforce the corroboration rule and waiver validity | `python3` |
 | `scripts/run-gates.sh` | Run the track's required checks, emit `evidence.json` | `python3`, `git` |
 | `scripts/check-api-coverage.sh` | Fail when a changed endpoint has no test that exercises it over HTTP | `python3` |
-| `scripts/check-consistency.sh` | Catch framework self-contradictions and broken links | `python3` |
-| `scripts/self-test.sh` | Prove the gates fail when they should | `python3` |
+| `scripts/check-consistency.sh` | Catch framework self-contradictions and broken links (**framework repo only**; refuses a vendored `.aidf/` root) | `python3` |
+| `scripts/self-test.sh` | Prove the gates fail when they should (**framework repo only**) | `python3` |
 | `scripts/lib/minischema.py` | Dependency-free JSON Schema subset validator | — |
 | `mockup/` | Working design-mockup scaffold: shared tokens, fixtures, states, `serve.sh` | `python3` to serve |
 | `github/workflows/aidf-gates.yml` | PR-time gates, evidence upload, size budget | GitHub Actions |
-| `github/workflows/aidf-selfcheck.yml` | Consistency + self-test + diagram parsing | GitHub Actions |
+| `github/workflows/aidf-selfcheck.yml` | **Copied into projects:** validate `project.yaml` only. The framework repo's own `.github/workflows/aidf-selfcheck.yml` still runs full consistency + self-test + Mermaid | GitHub Actions |
 | `github/PULL_REQUEST_TEMPLATE.md` | Links evidence rather than restating it | GitHub |
 | `github/CODEOWNERS` | Turns "specialist review required" into a control | GitHub |
 

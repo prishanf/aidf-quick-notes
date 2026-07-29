@@ -34,7 +34,7 @@ Owns `ai_reviewing` after the PR is open. Looks for defects, regressions, securi
 
 ### Release agent → [`ship`](../commands/ship.md)
 
-Prepares release notes, migration and rollback notes, and documentation updates after checks pass. Production approval remains human-owned unless the project explicitly delegates it to an audited CI policy.
+Prepares release notes, migration and rollback notes, and documentation updates after checks pass. When a human authorizes the production cut, creates and pushes the annotated version tag that matches the release notes `version` on the production tip. Production approval remains human-owned unless the project explicitly delegates it to an audited CI policy.
 
 ## Parallel work
 
