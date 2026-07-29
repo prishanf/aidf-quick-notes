@@ -185,21 +185,9 @@ async function saveEdit() {
     return
   }
 
-  const existing = notes.value.find(n => n.id === id)
-  if (!existing) {
-    editError.value = 'That note was not found. It may already have been deleted.'
-    editingId.value = null
-    return
-  }
-
-  const patch: { title?: string; body?: string } = {}
-  if (trimmed !== existing.title) patch.title = trimmed
-  if (editBody.value !== existing.body) patch.body = editBody.value
-
-  if (!patch.title && patch.body === undefined) {
-    cancelEdit()
-    return
-  }
+  // Always PATCH both form fields so a concurrent delete is detected even when
+  // the user did not change either value (partial omit would skip the request).
+  const patch = { title: trimmed, body: editBody.value }
 
   savingEdit.value = true
   try {
@@ -216,12 +204,22 @@ async function saveEdit() {
   catch (error: unknown) {
     const err = error as {
       statusCode?: number
-      data?: { statusMessage?: string; statusCode?: number }
+      status?: number
       statusMessage?: string
+      message?: string
+      data?: { statusMessage?: string; statusCode?: number; message?: string }
+      response?: { status?: number; _data?: { statusMessage?: string; statusCode?: number } }
     }
-    const status = err?.data?.statusCode ?? err?.statusCode
+    const status = err?.statusCode
+      ?? err?.status
+      ?? err?.data?.statusCode
+      ?? err?.response?.status
+      ?? err?.response?._data?.statusCode
     const message = err?.data?.statusMessage
+      || err?.data?.message
+      || err?.response?._data?.statusMessage
       || err?.statusMessage
+      || err?.message
       || (status === 404
         ? 'That note was not found. It may already have been deleted.'
         : 'Could not save the note. Nothing was changed. Try again.')
