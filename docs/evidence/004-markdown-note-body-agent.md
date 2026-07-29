@@ -4,10 +4,12 @@ runner: agent
 commit: b45490f
 change: feat/004-markdown-note-body
 recorded: 2026-07-28
-ci_corroboration: pending — will be added once the PR's `gates` run concludes
+ci_corroboration: https://github.com/prishanf/aidf-quick-notes/actions/runs/30428846804
 ---
 
-# Agent-run verification (claimed — pending CI corroboration)
+# Agent-run verification (claimed — CI corroborated on PR #4)
+
+`gates` job on PR #4 concluded success (run 30428846804); `project-checks` also passed (run 30428846797); `specialist-review` correctly skipped (no Track C tag).
 
 Commands executed locally by the build agent on the tip of `feat/004-markdown-note-body` (`b45490f`).
 
@@ -37,4 +39,4 @@ Run in the actual app (`npm run dev`), not just the design mockup:
 
 Not checked by a human yet: cross-browser rendering beyond the one browser used here; screen-reader announcement of the `aria-pressed` toggle state (implemented per the design, not independently verified with an assistive-technology tool).
 
-CI corroboration: to be added once the `gates` workflow run concludes on this PR.
+CI corroboration: `gates` + `project-checks` passed on https://github.com/prishanf/aidf-quick-notes/pull/4 (run 30428846804).
