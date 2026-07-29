@@ -16,11 +16,12 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note): PR #3 — UI QA approved; next `review` then human PR approval
-- Optional follow-ups: Feature 2 UI QA sign-off; branch protection
+- Feature 3 (edit a note): PR #3 — AI review complete / ready-for-human; human PR approval next
+- Optional follow-ups: Feature 2 UI QA sign-off; branch protection; Cancel-during-save design fidelity (P2)
 
 ## Recently completed
 
+- Feature 3 AI review ready-for-human (`docs/reviews/003-edit-note.md`)
 - Feature 3 UI QA approved (`docs/qa/003-edit-note-ui-signoff.md`)
 - Feature 3 Preview + concurrent-delete Save fix (`371a7ba`)
 - Feature 3 build: `PATCH /api/notes/:id`, inline edit UI, HTTP tests
@@ -31,7 +32,7 @@ manifest: project.yaml
 
 ## Next
 
-- Run `review` on PR #3; then human PR approval / merge to `develop`
+- Human PR approval / merge of PR #3 to `develop`
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers

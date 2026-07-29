@@ -1,15 +1,15 @@
 ---
 type: evidence
 runner: agent
-commit: 1e911c3
+commit: 90af53e
 change: feat/003-edit-note
 recorded: 2026-07-28
-ci_corroboration: pending
+ci_corroboration: https://github.com/prishanf/aidf-quick-notes/actions/runs/30423466968
 ---
 
-# Agent-run verification (claimed — awaiting CI corroboration)
+# Agent-run verification (claimed — CI corroborated on PR #3)
 
-Commands executed locally by the build agent on `feat/003-edit-note`. Results below are agent-claimed only until CI re-runs the same checks.
+Commands executed locally by the build agent. CI `gates` job on PR #3 tip `90af53e` concluded success (run 30423466968). Later review-doc commits may re-trigger CI; treat the latest green `gates` run as corroboration.
 
 | Command | Exit |
 |---|---|
@@ -20,4 +20,4 @@ Commands executed locally by the build agent on `feat/003-edit-note`. Results be
 | `sh .aidf/reference/scripts/check-api-coverage.sh --manifest ./project.yaml` | 0 (5/5 covered) |
 | `sh .aidf/reference/scripts/check-changelog.sh --track B --manifest ./project.yaml` | 0 |
 
-Next: CI on the PR must corroborate these checks.
+CI corroboration: `gates` + `project-checks` passed on https://github.com/prishanf/aidf-quick-notes/pull/3 (run 30423466968).
