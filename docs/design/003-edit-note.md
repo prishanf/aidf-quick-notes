@@ -2,7 +2,7 @@
 type: design
 track: C
 required_when: "the change carries the `ui` tag"
-status: pending-review
+status: approved
 owner: prishanf
 updated: 2026-07-28
 spec: docs/specs/003-edit-note.md

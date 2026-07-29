@@ -16,18 +16,19 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 3 (edit a note): spec + design approved; mockup ready for review — awaiting implementation planning gate approval
+- Feature 3 (edit a note): spec + design/mockup approved; implementation plan pending approval — `docs/plans/003-edit-note.md`
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection
 
 ## Recently completed
 
+- Feature 3 design + mockup approved (inline edit, partial PATCH)
 - Production push: `main` and `develop` at `d62b6b1`
 - Ship docs, ADRs, operator wiki for v0.1.0
 - PR #1 and #2 merged to `develop`, then released to `main`
 
 ## Next
 
-- Spec Feature 3 (edit) off `develop`
+- Approve Feature 3 plan, then branch `feat/003-edit-note` and build
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers

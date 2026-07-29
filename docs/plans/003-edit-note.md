@@ -2,7 +2,7 @@
 type: implementation-plan
 track: B
 required_when: "every Track B and Track C change"
-status: draft
+status: approved
 owner: prishanf
 created: 2026-07-28
 updated: 2026-07-28
@@ -150,10 +150,10 @@ Update of existing `notes` columns only — **no** `database` tag, **no** migrat
 
 ## Approval
 
-- Decision: `pending`
-- Approver:
-- Date:
-- Notes:
+- Decision: `approved`
+- Approver: prishanf
+- Date: 2026-07-28
+- Notes: Spec and design already approved (inline edit + partial PATCH). Build may proceed.
 
 ## Agent instruction
 
