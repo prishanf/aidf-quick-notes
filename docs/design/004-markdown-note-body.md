@@ -2,7 +2,7 @@
 type: design
 track: C
 required_when: "the change carries the `ui` tag"
-status: pending-review
+status: approved
 owner: prishanf
 updated: 2026-07-28
 spec: docs/specs/004-markdown-note-body.md
@@ -94,10 +94,10 @@ Static HTML/CSS/JS with fabricated data. **Throwaway — do not reuse markup as 
 
 ## Approval
 
-- Decision: `pending`
-- Approver:
-- Date:
-- Notes:
+- Decision: `approved`
+- Approver: prishanf
+- Date: 2026-07-28
+- Notes: Interactive mockup reviewed and approved — rendered Markdown, raw-HTML/unsafe-link escaping, and the Write/Preview toggle on both create and edit forms all verified working. Ready for implementation planning.
 
 ## Agent instruction
 

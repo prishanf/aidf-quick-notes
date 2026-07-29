@@ -16,11 +16,12 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 4 (Markdown note body): spec approved (`docs/specs/004-markdown-note-body.md`) — design gate next (mockup extends shared `docs/design/mockups/notes/` package)
+- Feature 4 (Markdown note body): spec + design/mockup approved (`docs/specs/004-markdown-note-body.md`, `docs/design/004-markdown-note-body.md`) — implementation plan next
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection; Cancel-during-save design fidelity (P2)
 
 ## Recently completed
 
+- Feature 4 design + mockup approved: rendered Markdown in list, Write/Preview toggle on create + edit forms, raw-HTML/unsafe-link escaping demonstrated
 - Feature 3 (edit a note) merged to `develop` via PR #3 (`9f3cc97`): `PATCH /api/notes/:id`, inline edit UI, HTTP tests, AI review + UI QA sign-off
 - Feature 3 Preview + concurrent-delete Save fix (`371a7ba`)
 - Production push: `main` and `develop` at `d62b6b1`
@@ -29,7 +30,7 @@ manifest: project.yaml
 
 ## Next
 
-- Design gate for Feature 4: mockup + design doc, then approval, then implementation plan
+- Write and approve Feature 4 implementation plan, then branch `feat/004-markdown-note-body` and build
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers
