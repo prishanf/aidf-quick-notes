@@ -9,11 +9,14 @@ type Note = {
 
 type LoadState = 'loading' | 'success' | 'error'
 
+type BodyMode = 'write' | 'preview'
+
 const notes = ref<Note[]>([])
 const loadState = ref<LoadState>('loading')
 const loadError = ref('')
 const title = ref('')
 const body = ref('')
+const bodyMode = ref<BodyMode>('write')
 const titleError = ref('')
 const formStatus = ref('')
 const saving = ref(false)
@@ -25,6 +28,7 @@ const deleteError = ref('')
 const editingId = ref<string | null>(null)
 const editTitle = ref('')
 const editBody = ref('')
+const editBodyMode = ref<BodyMode>('write')
 const editTitleError = ref('')
 const editBodyError = ref('')
 const editError = ref('')
@@ -85,6 +89,7 @@ async function onSubmit() {
     notes.value = [created, ...notes.value]
     title.value = ''
     body.value = ''
+    bodyMode.value = 'write'
     formStatus.value = 'Note saved.'
   }
   catch (error: unknown) {
@@ -151,6 +156,7 @@ function openEdit(note: Note) {
   editingId.value = note.id
   editTitle.value = note.title
   editBody.value = note.body
+  editBodyMode.value = 'write'
   editTitleError.value = ''
   editBodyError.value = ''
   nextTick(() => {
@@ -163,6 +169,7 @@ function cancelEdit() {
   editingId.value = null
   editTitle.value = ''
   editBody.value = ''
+  editBodyMode.value = 'write'
   editTitleError.value = ''
   editBodyError.value = ''
 }
@@ -199,6 +206,7 @@ async function saveEdit() {
     editingId.value = null
     editTitle.value = ''
     editBody.value = ''
+    editBodyMode.value = 'write'
     formStatus.value = 'Note updated.'
   }
   catch (error: unknown) {
@@ -228,6 +236,7 @@ async function saveEdit() {
       editError.value = message
       notes.value = notes.value.filter(n => n.id !== id)
       editingId.value = null
+      editBodyMode.value = 'write'
       return
     }
 
@@ -337,11 +346,38 @@ watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
           </div>
 
           <div>
-            <label
-              for="body"
-              class="block text-sm font-medium"
-            >Body</label>
+            <div class="flex items-center justify-between">
+              <label
+                for="body"
+                class="block text-sm font-medium"
+              >Body</label>
+              <div
+                role="group"
+                aria-label="Body editing mode"
+                class="inline-flex overflow-hidden rounded-md border border-border"
+              >
+                <button
+                  type="button"
+                  :aria-pressed="bodyMode === 'write'"
+                  class="px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :class="bodyMode === 'write' ? 'bg-surface-sunken text-text' : 'text-text-muted hover:text-text'"
+                  @click="bodyMode = 'write'"
+                >
+                  Write
+                </button>
+                <button
+                  type="button"
+                  :aria-pressed="bodyMode === 'preview'"
+                  class="border-l border-border px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  :class="bodyMode === 'preview' ? 'bg-surface-sunken text-text' : 'text-text-muted hover:text-text'"
+                  @click="bodyMode = 'preview'"
+                >
+                  Preview
+                </button>
+              </div>
+            </div>
             <textarea
+              v-if="bodyMode === 'write'"
               id="body"
               v-model="body"
               rows="4"
@@ -349,11 +385,24 @@ watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
               aria-describedby="body-hint"
               class="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             />
+            <div
+              v-else
+              class="mt-1 min-h-[6.5rem] w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text"
+            >
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-if="body" class="rendered-md" v-html="renderMarkdown(body)" />
+              <p
+                v-else
+                class="text-sm text-text-muted italic"
+              >
+                Nothing to preview yet — write some Markdown first.
+              </p>
+            </div>
             <p
               id="body-hint"
               class="mt-1 text-xs text-text-muted"
             >
-              Optional. Up to 5000 characters.
+              Optional. Up to 5000 characters. Markdown supported: headings, bold/italic, links, lists, code, blockquotes.
             </p>
           </div>
 
@@ -518,20 +567,63 @@ watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
                 </p>
               </div>
               <div>
-                <label
-                  :for="`edit-body-${note.id}`"
-                  class="block text-sm font-medium"
-                >Body</label>
+                <div class="flex items-center justify-between">
+                  <label
+                    :for="`edit-body-${note.id}`"
+                    class="block text-sm font-medium"
+                  >Body</label>
+                  <div
+                    role="group"
+                    aria-label="Body editing mode"
+                    class="inline-flex overflow-hidden rounded-md border border-border"
+                  >
+                    <button
+                      type="button"
+                      :aria-pressed="editBodyMode === 'write'"
+                      :disabled="savingEdit"
+                      class="px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                      :class="editBodyMode === 'write' ? 'bg-surface-sunken text-text' : 'text-text-muted hover:text-text'"
+                      @click="editBodyMode = 'write'"
+                    >
+                      Write
+                    </button>
+                    <button
+                      type="button"
+                      :aria-pressed="editBodyMode === 'preview'"
+                      :disabled="savingEdit"
+                      class="border-l border-border px-2.5 py-1 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                      :class="editBodyMode === 'preview' ? 'bg-surface-sunken text-text' : 'text-text-muted hover:text-text'"
+                      @click="editBodyMode = 'preview'"
+                    >
+                      Preview
+                    </button>
+                  </div>
+                </div>
                 <textarea
+                  v-if="editBodyMode === 'write'"
                   :id="`edit-body-${note.id}`"
                   v-model="editBody"
                   rows="3"
                   maxlength="5000"
+                  :disabled="savingEdit"
                   :aria-invalid="editBodyError ? 'true' : 'false'"
                   :aria-describedby="editBodyError ? `edit-body-error-${note.id}` : undefined"
                   class="mt-1 w-full rounded-md border bg-surface px-3 py-2 text-base text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                   :class="editBodyError ? 'border-danger' : 'border-border'"
                 />
+                <div
+                  v-else
+                  class="mt-1 min-h-[5.5rem] w-full rounded-md border border-border bg-surface px-3 py-2 text-base text-text"
+                >
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <div v-if="editBody" class="rendered-md" v-html="renderMarkdown(editBody)" />
+                  <p
+                    v-else
+                    class="text-sm text-text-muted italic"
+                  >
+                    Nothing to preview yet — write some Markdown first.
+                  </p>
+                </div>
                 <p
                   v-if="editBodyError"
                   :id="`edit-body-error-${note.id}`"
@@ -568,12 +660,11 @@ watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
                 <h3 class="font-semibold text-text">
                   {{ note.title }}
                 </h3>
-                <p class="mt-1 whitespace-pre-wrap text-sm text-text-muted">
-                  <template v-if="note.body">
-                    {{ note.body }}
-                  </template>
+                <div class="mt-1 text-sm text-text-muted">
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <div v-if="note.body" class="rendered-md" v-html="renderMarkdown(note.body)" />
                   <span v-else>—</span>
-                </p>
+                </div>
                 <p class="mt-2 text-xs text-text-muted">
                   <time :datetime="note.updatedAt">{{ formatDateTime(note.updatedAt) }}</time>
                 </p>
@@ -646,3 +737,87 @@ watch([pendingDeleteId, editingId], ([deleteId, editId], _, onCleanup) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Rendered Markdown output (Feature 4 — safe CommonMark subset via
+   app/utils/markdown.ts). Raw HTML in the source is escaped upstream by the
+   renderer (html:false); this never inserts unescaped user content as live
+   DOM. Values come from the token layer, per docs/design/ui-foundation.md. */
+.rendered-md {
+  line-height: 1.55;
+}
+.rendered-md > :first-child {
+  margin-top: 0;
+}
+.rendered-md > :last-child {
+  margin-bottom: 0;
+}
+.rendered-md :deep(p) {
+  margin: 0.5em 0;
+}
+.rendered-md :deep(h1),
+.rendered-md :deep(h2),
+.rendered-md :deep(h3),
+.rendered-md :deep(h4),
+.rendered-md :deep(h5),
+.rendered-md :deep(h6) {
+  margin: 0.75em 0 0.35em;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+.rendered-md :deep(h1) { font-size: var(--text-lg); }
+.rendered-md :deep(h2) { font-size: var(--text-base); }
+.rendered-md :deep(h3),
+.rendered-md :deep(h4),
+.rendered-md :deep(h5),
+.rendered-md :deep(h6) { font-size: var(--text-sm); }
+.rendered-md :deep(strong) {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.rendered-md :deep(em) {
+  font-style: italic;
+}
+.rendered-md :deep(a) {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.rendered-md :deep(a:hover) {
+  color: var(--color-primary-hover);
+}
+.rendered-md :deep(ul),
+.rendered-md :deep(ol) {
+  margin: 0.5em 0;
+  padding-left: 1.4em;
+}
+.rendered-md :deep(ul) { list-style: disc; }
+.rendered-md :deep(ol) { list-style: decimal; }
+.rendered-md :deep(li + li) {
+  margin-top: 0.2em;
+}
+.rendered-md :deep(blockquote) {
+  margin: 0.5em 0;
+  padding: 0.25em 0.9em;
+  border-left: 3px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+}
+.rendered-md :deep(code) {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+.rendered-md :deep(pre) {
+  margin: 0.5em 0;
+  padding: 0.6em 0.8em;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+.rendered-md :deep(pre code) {
+  background: none;
+  padding: 0;
+}
+</style>
