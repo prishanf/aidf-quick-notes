@@ -41,6 +41,19 @@ describe('renderMarkdown', () => {
     expect(html).not.toContain('href="javascript:')
   })
 
+  it('does not autolink a bare javascript: scheme string via linkify', () => {
+    const html = renderMarkdown('Visit javascript:alert(1) now, or plain http://example.com/x')
+    expect(html).not.toContain('href="javascript:')
+    // The safe http(s) URL should still autolink; only the unsafe scheme is suppressed.
+    expect(html).toContain('<a href="http://example.com/x">')
+  })
+
+  it('does not render a data: URI link as a clickable anchor', () => {
+    const html = renderMarkdown('[x](data:text/html,<script>alert(1)</script>)')
+    expect(html).not.toContain('<a ')
+    expect(html).not.toContain('href="data:')
+  })
+
   it('renders plain text with no Markdown syntax as a single paragraph', () => {
     const html = renderMarkdown('Buy milk and eggs.')
     expect(html).toBe('<p>Buy milk and eggs.</p>\n')
