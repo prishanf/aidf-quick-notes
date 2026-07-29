@@ -84,10 +84,10 @@ Static HTML/CSS/JS with fabricated data. **Throwaway — do not reuse markup as 
 
 ## Approval
 
-- Decision: `pending`
-- Approver:
-- Date:
-- Notes:
+- Decision: `approved`
+- Approver: prishanf
+- Date: 2026-07-28
+- Notes: Interactive mockup reviewed and approved. All states (edit form, validation error, save error, not found, loading, empty) reachable via URL params. Inline row edit pattern confirmed; partial updates (title, body, or both) UI working. Ready for implementation planning.
 
 ## Agent instruction
 
