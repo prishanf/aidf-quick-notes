@@ -2,7 +2,7 @@
 type: implementation-plan
 track: B
 required_when: "every Track B and Track C change"
-status: draft
+status: approved
 owner: prishanf
 created: 2026-07-28
 updated: 2026-07-28
@@ -137,10 +137,10 @@ Not applicable — this change does not carry the `api` tag. `GET/POST /api/note
 
 ## Approval
 
-- Decision: `pending`
-- Approver:
-- Date:
-- Notes:
+- Decision: `approved`
+- Approver: prishanf
+- Date: 2026-07-28
+- Notes: Approved as drafted. Build may begin in a worktree off `develop` on `feat/004-markdown-note-body`.
 
 ## Agent instruction
 
