@@ -16,11 +16,12 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 4 (Markdown note body): PR #4 open (`feat/004-markdown-note-body` → `develop`) — next action is **AI review**, not human approval yet
+- Feature 4 (Markdown note body): PR #4 (`feat/004-markdown-note-body` → `develop`) — AI review complete, ready-for-human comment posted; **human PR approval next**
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection; Cancel-during-save design fidelity (P2)
 
 ## Recently completed
 
+- Feature 4 AI review: one P1 found (missing regression tests for `linkify`-autolinked unsafe-scheme strings and `data:` URI links) and fixed (`cfc5604`); `docs/reviews/004-markdown-note-body.md` — ready-for-human
 - Feature 4 built: `app/utils/markdown.ts` (markdown-it, html:false), rendered list body, Write/Preview toggle on create + Feature 3 edit forms; lint/typecheck/test/build all pass; manually verified in the running app (script-tag escaping, save-while-previewing)
 - Feature 4 spec + design/mockup + implementation plan all approved (Track B, tags `ui`, `dependency`; no schema/API change)
 - Feature 3 (edit a note) merged to `develop` via PR #3 (`9f3cc97`): `PATCH /api/notes/:id`, inline edit UI, HTTP tests, AI review + UI QA sign-off
@@ -30,7 +31,7 @@ manifest: project.yaml
 
 ## Next
 
-- AI review of PR #4, then human PR approval and merge to `develop`
+- Human PR approval and merge of PR #4 to `develop`
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers
