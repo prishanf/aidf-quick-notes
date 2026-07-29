@@ -16,22 +16,21 @@ manifest: project.yaml
 
 ## Now
 
-- Feature 4 (Markdown note body): plan approved — building in worktree `feat/004-markdown-note-body`
+- Feature 4 (Markdown note body): PR #4 open (`feat/004-markdown-note-body` → `develop`) — next action is **AI review**, not human approval yet
 - Optional follow-ups: Feature 2 UI QA sign-off; branch protection; Cancel-during-save design fidelity (P2)
 
 ## Recently completed
 
+- Feature 4 built: `app/utils/markdown.ts` (markdown-it, html:false), rendered list body, Write/Preview toggle on create + Feature 3 edit forms; lint/typecheck/test/build all pass; manually verified in the running app (script-tag escaping, save-while-previewing)
 - Feature 4 spec + design/mockup + implementation plan all approved (Track B, tags `ui`, `dependency`; no schema/API change)
-- Feature 4 design + mockup approved: rendered Markdown in list, Write/Preview toggle on create + edit forms, raw-HTML/unsafe-link escaping demonstrated
 - Feature 3 (edit a note) merged to `develop` via PR #3 (`9f3cc97`): `PATCH /api/notes/:id`, inline edit UI, HTTP tests, AI review + UI QA sign-off
-- Feature 3 Preview + concurrent-delete Save fix (`371a7ba`)
 - Production push: `main` and `develop` at `d62b6b1`
 - Ship docs, ADRs, operator wiki for v0.1.0
 - PR #1 and #2 merged to `develop`, then released to `main`
 
 ## Next
 
-- Build Feature 4 per the approved plan; open PR to `develop`
+- AI review of PR #4, then human PR approval and merge to `develop`
 - Close accepted follow-ups from v0.1.0 when convenient
 
 ## Risks and blockers
